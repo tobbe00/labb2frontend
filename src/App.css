@@ -36,3 +36,33 @@
     transform: rotate(360deg);
   }
 }
+
+/* App.css */
+
+.App {
+  text-align: center;
+}
+
+.App-nav {
+  background-color: #282c34;
+  padding: 1rem;
+}
+
+.App-nav a {
+  margin: 0 10px;
+  padding: 10px 20px;
+  color: white;
+  background-color: #61dafb;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.App-nav a:hover {
+  background-color: #21a1f1;
+}
+
+.App-header {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+}
