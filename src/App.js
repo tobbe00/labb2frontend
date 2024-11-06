@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import Login from './login'; // Ensure this matches the case of the filename
+import Messages from './messages'; // Import the Messages component
+import ViewPatients from './viewPatients'; // Import the ViewPatients component
+import PatientJournal from './PatientJournal';
+//import PatientAppointments from './PatientAppointments';
+//import PatientConditions from './PatientConditions';
 
 function App() {
     const [user, setUser] = useState({ isLoggedIn: false, role: '' });
@@ -21,8 +26,11 @@ function App() {
                 {/* Define Routes */}
                 <Routes>
                     <Route path="/login" element={<Login onLogin={(userData) => setUser(userData)} />} />
-                    <Route path="/messages" element={<h2>Messages Page</h2>} />
-                    <Route path="/view-patients" element={<h2>View Patients Page</h2>} />
+                    <Route path="/messages" element={<Messages />} /> {/* Route to Messages component */}
+
+                    <Route path="/view-patients" element={<ViewPatients />} />
+                    <Route path="/patients/:id/journal" element={<PatientJournal />} />
+
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>

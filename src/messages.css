@@ -1,0 +1,21 @@
+/* Add to your CSS file */
+.conversation-container {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.messages {
+    margin-top: 10px;
+}
+
+.sent {
+    text-align: right;
+    color: blue; /* Color for your sent messages */
+}
+
+.received {
+    text-align: left;
+    color: green; /* Color for received messages */
+}
