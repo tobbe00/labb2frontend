@@ -21,6 +21,7 @@ function App() {
                     <Link to="/login">Login</Link>
                     <Link to="/messages">Messages</Link>
                     <Link to="/view-patients">View Patients</Link>
+                    <Link to="/view-employees">View Employees</Link>
                 </nav>
 
                 {/* Define Routes */}
@@ -30,7 +31,7 @@ function App() {
 
                     <Route path="/view-patients" element={<ViewPatients />} />
                     <Route path="/patients/:id/journal" element={<PatientJournal />} />
-
+                    <Route path="/view-employees" element={<viewEmplayees/>}/>
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>

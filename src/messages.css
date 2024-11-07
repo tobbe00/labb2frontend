@@ -19,3 +19,38 @@
     text-align: left;
     color: green; /* Color for received messages */
 }
+.messages-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.messages-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.message-item {
+    display: flex;
+    justify-content: space-between; /* Adds space between From and Message Text */
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.message-item:last-child {
+    border-bottom: none; /* Remove border from the last item */
+}
+
+.message-item span {
+    margin-right: 10px; /* Adds space between items */
+    white-space: nowrap; /* Prevents wrapping */
+}
+
+
+
+
+
+
+
+
+
