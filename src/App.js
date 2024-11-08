@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes, Link } from 'react-router-dom';
 import './App.css';
 import Login from './login'; // Ensure this matches the case of the filename
 import Messages from './messages'; // Import the Messages component
@@ -14,21 +14,35 @@ import SendMessagePage from "./SendMessagePage";
 function App() {
     const [user, setUser] = useState({ isLoggedIn: false, role: '' });
 
+    const handleLogin = (userData) => {
+        setUser({ isLoggedIn: true, ...userData });
+    };
+
+    const handleLogout = () => {
+        setUser({ isLoggedIn: false, role: '' });
+    };
+
     return (
-        <Router>
             <div className="App">
                 {/* Navigation Bar */}
                 <nav className="App-nav">
                     <Link to="/">Home</Link>
-                    <Link to="/login">Login</Link>
-                    <Link to="/messages">Messages</Link>
-                    <Link to="/view-patients">View Patients</Link>
-                    <Link to="/view-employees">View Employees</Link>
+                    {user.isLoggedIn ? (
+                        <>
+                            <Link to="/messages">Messages</Link>
+                            <Link to="/view-patients">View Patients</Link>
+                            <Link to="/view-employees">View Employees</Link>
+                            <button onClick={handleLogout} className="logout-button">Logga ut</button>
+                        </>
+                    ) : (
+                        <Link to="/login">Login</Link>
+                    )}
+
                 </nav>
 
                 {/* Define Routes */}
                 <Routes>
-                    <Route path="/login" element={<Login onLogin={(userData) => setUser(userData)} />} />
+                    <Route path="/login" element={<Login onLogin={handleLogin} />} />
                     <Route path="/messages" element={<Messages />} /> {/* Route to Messages component */}
 
                     <Route path="/view-patients" element={<ViewPatients />} />
@@ -38,7 +52,6 @@ function App() {
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>
-        </Router>
     );
 }
 

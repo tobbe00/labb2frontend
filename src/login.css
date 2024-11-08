@@ -50,3 +50,7 @@ button {
 button:hover {
     background-color: #21a1f1;
 }
+
+button[type="submit"] {
+    margin-bottom: 10px;
+}/* Mellanrum mellan 'Logga in' och 'Skapa ett konto' knapparna */
