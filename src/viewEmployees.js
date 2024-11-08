@@ -44,7 +44,7 @@ function ViewEmployeesPage() {
                             <span><strong>Status:</strong> {employee.status}</span>
 
                             {/* Display button with action */}
-                            <Link to={`/send-message/${employee.id}`}>
+                            <Link to={`/send-message/${employee.userId}`}>
                                 <button className="message-button">
                                     Message
                                 </button>
