@@ -6,6 +6,7 @@ import Login from './login'; // Ensure this matches the case of the filename
 import Messages from './messages'; // Import the Messages component
 import ViewPatients from './viewPatients'; // Import the ViewPatients component
 import PatientJournal from './PatientJournal';
+import ViewEmployees from "./viewEmployees";
 //import PatientAppointments from './PatientAppointments';
 //import PatientConditions from './PatientConditions';
 
@@ -31,7 +32,7 @@ function App() {
 
                     <Route path="/view-patients" element={<ViewPatients />} />
                     <Route path="/patients/:id/journal" element={<PatientJournal />} />
-                    <Route path="/view-employees" element={<viewEmplayees/>}/>
+                    <Route path="/view-employees" element={<ViewEmployees/>}/>
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>

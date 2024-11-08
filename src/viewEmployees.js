@@ -11,7 +11,7 @@ function ViewEmployeesPage() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/employees'); // Replace with your actual API endpoint
+                const response = await fetch('http://localhost:8080/api/employees/getAllEmployees'); // Replace with your actual API endpoint
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch employees');
@@ -38,7 +38,7 @@ function ViewEmployeesPage() {
             {employees.length > 0 ? (
                 <ul>
                     {employees.map((employee) => (
-                        <li key={employee.id} className="employee-item">
+                        <li key={employee.userId} className="employee-item">
                             <hr />
                             <span><strong>Name:</strong> {employee.name}</span>
                             <span><strong>Status:</strong> {employee.status}</span>
