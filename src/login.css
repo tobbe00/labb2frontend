@@ -54,3 +54,11 @@ button:hover {
 button[type="submit"] {
     margin-bottom: 10px;
 }/* Mellanrum mellan 'Logga in' och 'Skapa ett konto' knapparna */
+
+.full-width {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
