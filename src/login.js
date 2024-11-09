@@ -25,13 +25,13 @@ async function loginUser(credentials) {
 }
 
 
-async function registerUser({ userName, email, password, name }) {
+async function registerUser({email, password, name }) {
     return fetch('http://localhost:8080/api/users/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userName, email, password, name })
+        body: JSON.stringify({email, password, name })
     }).then(response => {
         if (response.ok) return { success: true };
         throw response;
@@ -44,7 +44,6 @@ async function registerUser({ userName, email, password, name }) {
 function Login({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [userName, setUsername] = useState('');
     const [name, setName] = useState('');
     const [showRegister, setShowRegister] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -52,7 +51,8 @@ function Login({ onLogin }) {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        let result = await loginUser({ email, password });
+        const result = await loginUser({ email, password });
+        console.log(result);
         if (result.success) {
             onLogin(result.authUser);
             setErrorMessage('');
@@ -64,10 +64,13 @@ function Login({ onLogin }) {
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        let result = await registerUser({ userName, email, password, name});
+        const result = await registerUser({ email, password, name});
         if (result.success) {
             setShowRegister(false);
             setErrorMessage('');
+            setEmail(''); // Nollställ fälten efter registrering
+            setPassword('');
+            navigate("/login"); // Navigera användaren till inloggningssidan
         } else {
             setErrorMessage(result.error);
         }
@@ -80,15 +83,6 @@ function Login({ onLogin }) {
             <form onSubmit={showRegister ? handleRegister : handleLogin}>
                 {showRegister && (
                     <>
-                        <div>
-                            <label>Användarnamn:</label>
-                            <input
-                                type="text"
-                                value={userName}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                            />
-                        </div>
                         <div>
                             <label>Namn:</label>
                             <input

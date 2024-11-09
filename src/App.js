@@ -12,14 +12,21 @@ import SendMessagePage from "./SendMessagePage";
 //import PatientConditions from './PatientConditions';
 
 function App() {
-    const [user, setUser] = useState({ isLoggedIn: false, role: '' });
+    const [user, setUser] = useState(() => {
+        // Hämta användarinformation från sessionStorage vid start om den finns
+        const storedUser = sessionStorage.getItem("user");
+        return storedUser ? JSON.parse(storedUser) : { isLoggedIn: false, role: '' };
+    });
 
     const handleLogin = (userData) => {
-        setUser({ isLoggedIn: true, ...userData });
+        const userInfo = { isLoggedIn: true, ...userData };
+        setUser(userInfo);
+        sessionStorage.setItem("user", JSON.stringify(userInfo)); // Spara i sessionStorage
     };
 
     const handleLogout = () => {
         setUser({ isLoggedIn: false, role: '' });
+        sessionStorage.removeItem("user"); // Ta bort från sessionStorage
     };
 
     return (
