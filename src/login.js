@@ -13,6 +13,8 @@ async function loginUser(credentials) {
     })
         .then(res => res.json().then(data => {
             if (res.ok) {
+                console.log("här är datas som fås tbx"+data);
+                sessionStorage.setItem("userId",data.user.id);
                 return { success: true, authUser: data.user };
             } else {
                 return { success: false, error: data.message || 'Misslyckades att logga in' };

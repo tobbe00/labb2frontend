@@ -46,11 +46,14 @@ function App() {
                         <Link to="/messages">Messages</Link>
 
                         {/* Visa "View Patients" och "View Employees" endast om användaren inte är patient */}
-                        {user.role !== "Patient" && (
+                        {/* Visa "View Patients" och "View Employees" endast om användaren inte är patient */}
+                        {user.role !== "Patient" ? (
                             <>
                                 <Link to="/view-patients">View Patients</Link>
                                 <Link to="/view-employees">View Employees</Link>
                             </>
+                        ) : (
+                            <Link to="/view-employees">View Employees</Link> // This will display in the "else" case (when user is a Patient)
                         )}
 
                         <button onClick={handleLogout} className="logout-button">Logga ut</button>
