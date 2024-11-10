@@ -61,7 +61,7 @@ function SendMessagePage() {
         <div>
             <h1>Send a Message to Employee {employeeId}</h1>
             <form onSubmit={handleSubmit}>
-                <textarea value={messageTitle} onChange={handleMessageTitleChange} placeholder={"title"} rows={"1"} cols={"40"}/>
+                <textarea value={messageTitle} onChange={handleMessageTitleChange} placeholder={"title"} rows={"1"} cols={"40"}/><br/>
                 <textarea
                     value={message}
                     onChange={handleMessageChange}
