@@ -1,67 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 
-
-
-function Messages() {
-    // State to hold the array of messages
-    const [messages, setMessages] = useState([]);
+function Conversations() {
+    const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [userId, setUserId] = useState(null);
 
-    // Fetch messages from the API
+    // Retrieve userId from sessionStorage when component loads
     useEffect(() => {
-        const fetchMessages = async () => {
+        const storedUserId = sessionStorage.getItem("userId");
+        if (storedUserId) {
+            setUserId(parseInt(storedUserId, 10));  // Convert to integer
+        } else {
+            setError('User ID is missing. Please log in.');
+        }
+    }, []);
+
+    // Fetch conversations from the API when userId is set
+    useEffect(() => {
+        const fetchConversations = async () => {
+            if (!userId) return; // Prevent the fetch if userId is null
+
             try {
-                const response = await fetch('http://localhost:8080/api/messages/received/2'); // Replace with your actual API endpoint
+                const response = await fetch(`http://localhost:8080/api/conversations/yourConversations/${userId}`);
 
                 if (!response.ok) {
-                    throw new Error('Failed to fetch messages');
+                    throw new Error('Failed to fetch conversations');
                 }
 
-                // Parse and set the data
                 const data = await response.json();
-                setMessages(data);
+                setConversations(data);
             } catch (error) {
-                setError('Failed to load messages.');
+                setError('Failed to load conversations.');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchMessages();
-    }, []);
+        fetchConversations();
+    }, [userId]); // Dependency on userId
 
     return (
-        <div className="messages-container">
-            <h2>Messages</h2>
-            {loading && <p>Loading messages...</p>}
+        <div className="conversations-container">
+            <h2>Conversations</h2>
+            {loading && <p>Loading conversations...</p>}
             {error && <p className="error-message">{error}</p>}
-            {messages.length > 0 ? (
+            {conversations.length > 0 ? (
                 <ul>
-                    {messages.map((message) => (
-                        <li key={message.messageId} className="message-item">
-                            <hr/>
-                            <span><strong>From:</strong> {message.sender.userName}</span>
-                            <span><strong> Message Text:</strong> {message.text}</span>
-                            <span><strong> Delivered:</strong>{message.time}</span>
-                            <span className="status-indicator">
-                                    {message.read ? '✔️' : <span className="unread-dot"></span>}
-                                </span>
-
-                            <hr/>
+                    {conversations.map((convo) => (
+                        <li key={convo.conversationId} className="conversation-item">
+                            <hr />
+                            <span><strong>With:</strong> {convo.withUserName} (ID: {convo.withUserId})</span>
+                            <span><strong>Latest Message:</strong> {convo.latestMessage}</span>
+                            <span><strong>Time:</strong> {new Date(convo.time).toLocaleString()}</span>
+                            <hr />
                         </li>
                     ))}
                 </ul>
             ) : (
-                !loading && <p>No messages found.</p>
+                !loading && <p>No conversations found.</p>
             )}
         </div>
     );
 }
 
-export default Messages;
-
-
-
-
+export default Conversations;
