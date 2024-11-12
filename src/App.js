@@ -8,6 +8,7 @@ import ViewPatients from './viewPatients'; // Import the ViewPatients component
 import PatientJournal from './PatientJournal';
 import ViewEmployees from "./viewEmployees";
 import SendMessagePage from "./SendMessagePage";
+import ChatRoom from "./chatRoom";
 //import PatientAppointments from './PatientAppointments';
 //import PatientConditions from './PatientConditions';
 
@@ -72,6 +73,7 @@ function App() {
                     <Route path="/patients/:id/journal" element={<PatientJournal />} />
                     <Route path="/view-employees" element={<ViewEmployees/>}/>
                     <Route path="/send-message/:employeeId" element={<SendMessagePage />} /> {/* The dynamic route */}
+                    <Route path="/chatRoom/:conversationId" element={<ChatRoom/>}/>
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>

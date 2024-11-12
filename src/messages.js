@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import {Link} from "react-router-dom";
 
 function Conversations() {
     const [conversations, setConversations] = useState([]);
@@ -53,6 +54,12 @@ function Conversations() {
                             <span><strong>With:</strong> {convo.withUserName} (ID: {convo.withUserId})</span>
                             <span><strong>Latest Message:</strong> {convo.latestMessage}</span>
                             <span><strong>Time:</strong> {new Date(convo.time).toLocaleString()}</span>
+                            {/* Display button with action */}
+                            <Link to={`/chatRoom/${convo.conversationId}`}>
+                                <button className="conversation-button">
+                                    View Conversation
+                                </button>
+                            </Link>
                             <hr />
                         </li>
                     ))}
