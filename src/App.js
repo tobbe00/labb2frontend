@@ -9,6 +9,7 @@ import PatientJournal from './PatientJournal';
 import ViewEmployees from "./viewEmployees";
 import SendMessagePage from "./SendMessagePage";
 import ChatRoom from "./chatRoom";
+import MakeNotePage from "./makeNotePage";
 //import PatientAppointments from './PatientAppointments';
 //import PatientConditions from './PatientConditions';
 
@@ -73,6 +74,7 @@ function App() {
                     <Route path="/view-employees" element={<ViewEmployees/>}/>
                     <Route path="/send-message/:employeeId" element={<SendMessagePage />} /> {/* The dynamic route */}
                     <Route path="/chatRoom/:conversationId" element={<ChatRoom/>}/>
+                    <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} /> {/* New route for MakeNotePage */}
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>

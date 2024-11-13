@@ -49,10 +49,10 @@ function ViewPatients() {
                                 <Link to={`/patients/${patient.patientId}/conditions`}>
                                     <button>View Conditions</button>
                                 </Link>
-                                <Link to={`/patients/${patient.patientId}/diagnose`}>
+                                <Link to={`/patients/${patient.userId}/diagnose`}>
                                     <button>Diagnose</button>
                                 </Link>
-                                <Link to={`/patients/${patient.patientId}/makeNote`}>
+                                <Link to={`/patients/${patient.userId}/makeNotePage`}>
                                     <button>Make a note</button>
                                 </Link>
                             </div>
