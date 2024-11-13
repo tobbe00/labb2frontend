@@ -9,6 +9,8 @@ import PatientJournal from './PatientJournal';
 import ViewEmployees from "./viewEmployees";
 import SendMessagePage from "./SendMessagePage";
 import ChatRoom from "./chatRoom";
+import MakeNotePage from "./makeNotePage";
+import DiagnosePage from "./diagnosePage";
 //import PatientAppointments from './PatientAppointments';
 //import PatientConditions from './PatientConditions';
 
@@ -51,7 +53,6 @@ function App() {
                         {user.role !== "Patient" ? (
                             <>
                                 <Link to="/view-patients">View Patients</Link>
-                                <Link to="/view-employees">View Employees</Link>
                             </>
                         ) : (
                             <Link to="/view-employees">View Employees</Link> // This will display in the "else" case (when user is a Patient)
@@ -74,6 +75,8 @@ function App() {
                     <Route path="/view-employees" element={<ViewEmployees/>}/>
                     <Route path="/send-message/:employeeId" element={<SendMessagePage />} /> {/* The dynamic route */}
                     <Route path="/chatRoom/:conversationId" element={<ChatRoom/>}/>
+                    <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} /> {/* New route for MakeNotePage */}
+                    <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
                     <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
                 </Routes>
             </div>
