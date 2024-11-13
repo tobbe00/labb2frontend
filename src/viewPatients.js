@@ -1,31 +1,24 @@
-// src/ViewPatients.js
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function ViewPatients() {
-    // State to hold patient data
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Simulating a fetch request to a backend
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                // Simulated response (you can replace this with a real API call)
-                const simulatedResponse = [
-                    { id: 1, name: 'Alice Johnson', age: 30, gender: 'Female' },
-                    { id: 2, name: 'Bob Smith', age: 45, gender: 'Male' },
-                    { id: 3, name: 'Charlie Brown', age: 25, gender: 'Male' },
-                ];
+                // Replace this URL with the actual endpoint URL that returns the PatientDTO list
+                const response = await fetch("http://localhost:8080/api/patients"); // Use the correct backend API endpoint
+                if (!response.ok) {
+                    throw new Error(`Error fetching patients: ${response.statusText}`);
+                }
 
-                // Simulate a network delay
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-
-                // Update state with simulated data
-                setPatients(simulatedResponse);
+                const data = await response.json();
+                setPatients(data);
             } catch (error) {
-                setError('Failed to fetch patients.');
+                setError(error.message || 'Failed to fetch patients.');
             } finally {
                 setLoading(false);
             }
@@ -34,7 +27,6 @@ function ViewPatients() {
         fetchPatients();
     }, []);
 
-    // Render loading state, error state, or patient list
     return (
         <div className="view-patients-container">
             <h2>Patients List</h2>
@@ -43,24 +35,31 @@ function ViewPatients() {
             {patients.length > 0 ? (
                 <ul>
                     {patients.map((patient) => (
-                        <li key={patient.id}>
+                        <li key={patient.userId}>  {/* Add key prop here */}
                             <div>
                                 <strong>{patient.name}</strong> (Age: {patient.age}, Gender: {patient.gender})
                             </div>
                             <div>
-                                <Link to={`/patients/${patient.id}/journal`}>
+                                <Link to={`/patients/${patient.patientId}/journal`}>
                                     <button>View Journal</button>
                                 </Link>
-                                <Link to={`/patients/${patient.id}/appointments`}>
+                                <Link to={`/patients/${patient.patientId}/appointments`}>
                                     <button>View Appointments</button>
                                 </Link>
-                                <Link to={`/patients/${patient.id}/conditions`}>
+                                <Link to={`/patients/${patient.patientId}/conditions`}>
                                     <button>View Conditions</button>
+                                </Link>
+                                <Link to={`/patients/${patient.patientId}/diagnose`}>
+                                    <button>Diagnose</button>
+                                </Link>
+                                <Link to={`/patients/${patient.patientId}/makeNote`}>
+                                    <button>Make a note</button>
                                 </Link>
                             </div>
                         </li>
                     ))}
                 </ul>
+
             ) : (
                 !loading && <p>No patients found.</p>
             )}

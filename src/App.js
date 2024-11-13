@@ -51,7 +51,6 @@ function App() {
                         {user.role !== "Patient" ? (
                             <>
                                 <Link to="/view-patients">View Patients</Link>
-                                <Link to="/view-employees">View Employees</Link>
                             </>
                         ) : (
                             <Link to="/view-employees">View Employees</Link> // This will display in the "else" case (when user is a Patient)
