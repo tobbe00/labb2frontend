@@ -1,4 +1,6 @@
-/* Add to your CSS file */
+/* Message.css */
+
+/* Container for the messages section */
 .conversation-container {
     padding: 20px;
     border: 1px solid #ddd;
@@ -6,30 +8,37 @@
     margin: 20px;
 }
 
+/* Message container for each individual message */
 .messages {
     margin-top: 10px;
 }
 
+/* Styling for sent messages */
 .sent {
     text-align: right;
     color: blue; /* Color for your sent messages */
 }
 
+/* Styling for received messages */
 .received {
     text-align: left;
     color: green; /* Color for received messages */
 }
+
+/* Container that holds the entire list of messages */
 .messages-container {
     padding: 20px;
     max-width: 600px;
     margin: auto;
 }
 
+/* List styling for messages */
 .messages-list {
     list-style-type: none;
     padding: 0;
 }
 
+/* Styling for each message item */
 .message-item {
     display: flex;
     justify-content: space-between; /* Adds space between From and Message Text */
@@ -37,20 +46,63 @@
     border-bottom: 1px solid #ccc;
 }
 
+/* Remove the border from the last message item */
 .message-item:last-child {
-    border-bottom: none; /* Remove border from the last item */
+    border-bottom: none;
 }
 
+/* Margin for span elements in each message */
 .message-item span {
     margin-right: 10px; /* Adds space between items */
     white-space: nowrap; /* Prevents wrapping */
 }
 
+/* Layout for the conversation list */
+.conversations-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
+/* Container for each individual conversation item */
+.conversation-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 600px;
+}
 
+/* Style for the conversation buttons */
+.conversation-button {
+    padding: 10px 20px;
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 200px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;  /* Add some space between button and content */
+}
 
+/* Hover effect for the conversation buttons */
+.conversation-button:hover {
+    background-color: #21a1f1;
+}
 
+/* You can also define other classes like for the 'My Journal' button or logout button */
+.my-journal-button {
+    background-color: #61dafb;
+}
 
-
-
-
+.my-journal-button:hover {
+    background-color: #21a1f1;
+}

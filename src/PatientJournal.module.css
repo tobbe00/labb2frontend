@@ -1,0 +1,89 @@
+/* Container för hela patientjournalen */
+.patientJournalContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container för patientinformation */
+.patientInfoContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.patientInfo h3 {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.patientInfo p {
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Container för tillstånd (conditions) */
+.conditionsContainer {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.conditionsContainer h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.conditionsContainer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.conditionsContainer li {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Container för observationer */
+.observationsContainer {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.observationsContainer h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.observationsContainer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.observationsContainer li {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.observationsContainer li p {
+    margin: 0;
+}

@@ -36,8 +36,9 @@ input {
     border-radius: 4px;
 }
 
+/* Justering av knapparnas stil */
 button {
-    width: 100%;
+    width: 100%;  /* Sätt båda knapparna till full bredd */
     padding: 10px;
     font-size: 1em;
     color: white;
@@ -45,20 +46,29 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    margin-top: 10px; /* Mellanrum mellan knapparna */
 }
 
 button:hover {
     background-color: #21a1f1;
 }
 
+/* För submit-knappen */
 button[type="submit"] {
-    margin-bottom: 10px;
-}/* Mellanrum mellan 'Logga in' och 'Skapa ett konto' knapparna */
+    margin-bottom: 15px;
+}
 
+/* För skapa konto-knappen */
 .full-width {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Mellanrum mellan knapparna */
 }

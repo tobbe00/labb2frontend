@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Link} from "react-router-dom";
+import './messages.css';
 
 function Conversations() {
     const [conversations, setConversations] = useState([]);
@@ -47,10 +48,11 @@ function Conversations() {
             {loading && <p>Loading conversations...</p>}
             {error && <p className="error-message">{error}</p>}
             {conversations.length > 0 ? (
-                <ul>
+
+                <ul className="messages-list">
                     {conversations.map((convo) => (
                         <li key={convo.conversationId} className="conversation-item">
-                            <hr />
+                            <hr/>
                             <span><strong>With:</strong> {convo.withUserName} (ID: {convo.withUserId})</span>
                             <span><strong>Latest Message:</strong> {convo.latestMessage}</span>
                             <span><strong>Time:</strong> {new Date(convo.time).toLocaleString()}</span>
@@ -60,7 +62,7 @@ function Conversations() {
                                     View Conversation
                                 </button>
                             </Link>
-                            <hr />
+                            <hr/>
                         </li>
                     ))}
                 </ul>

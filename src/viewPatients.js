@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import styles from './viewPatients.module.css';  // Importera din CSS-modul
 
 function ViewPatients() {
     const [patients, setPatients] = useState([]);
@@ -9,8 +10,7 @@ function ViewPatients() {
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                // Replace this URL with the actual endpoint URL that returns the PatientDTO list
-                const response = await fetch("http://localhost:8080/api/patients"); // Use the correct backend API endpoint
+                const response = await fetch("http://localhost:8080/api/patients");
                 if (!response.ok) {
                     throw new Error(`Error fetching patients: ${response.statusText}`);
                 }
@@ -28,38 +28,31 @@ function ViewPatients() {
     }, []);
 
     return (
-        <div className="view-patients-container">
+        <div className={styles.viewPatientsContainer}>
             <h2>Patients List</h2>
             {loading && <p>Loading patients...</p>}
             {error && <p className="error-message">{error}</p>}
             {patients.length > 0 ? (
-                <ul>
+                <ul className={styles.patientList}>
                     {patients.map((patient) => (
-                        <li key={patient.userId}>  {/* Add key prop here */}
+                        <li key={patient.userId} className={styles.patientItem}>
                             <div>
                                 <strong>{patient.name}</strong> (Age: {patient.age}, Gender: {patient.gender})
                             </div>
-                            <div>
+                            <div className={styles.buttonContainer}>  {/* Lägg till container för knappar */}
                                 <Link to={`/patients/${patient.patientId}/journal`}>
-                                    <button>View Journal</button>
-                                </Link>
-                                <Link to={`/patients/${patient.patientId}/appointments`}>
-                                    <button>View Appointments</button>
-                                </Link>
-                                <Link to={`/patients/${patient.patientId}/conditions`}>
-                                    <button>View Conditions</button>
+                                    <button className={styles.button}>View Journal</button>
                                 </Link>
                                 <Link to={`/patients/${patient.userId}/diagnosePage`}>
-                                    <button>Diagnose</button>
+                                    <button className={styles.button}>Diagnose</button>
                                 </Link>
                                 <Link to={`/patients/${patient.userId}/makeNotePage`}>
-                                    <button>Make a note</button>
+                                    <button className={styles.button}>Make a note</button>
                                 </Link>
                             </div>
                         </li>
                     ))}
                 </ul>
-
             ) : (
                 !loading && <p>No patients found.</p>
             )}

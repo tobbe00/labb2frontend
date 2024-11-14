@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import styles from './chatRoom.module.css';  // Importera CSS-modulen för ChatRoom
 
 function ChatRoom({ userId }) {
     const { conversationId } = useParams();
@@ -50,30 +51,31 @@ function ChatRoom({ userId }) {
     };
 
     return (
-        <div className="chatroom-container">
+        <div className={styles.chatroomContainer}>
             <h2>Chat Room</h2>
             {error && <p className="error-message">{error}</p>}
 
-            <div className="messages-container">
+            <div className={styles.messagesContainer}>
                 {messages.map((message, index) => (
-                    <div key={index} className="message">
-                        <strong>
+                    <div key={index} className={styles.messageItem}>
+                        <strong className={message.senderId === Number(sessionStorage.getItem("userId")) ? styles.sent : styles.received}>
                             {message.senderId === Number(sessionStorage.getItem("userId")) ? 'You' : 'Them'}:
-                        </strong> {message.text}
-                        <span className="timestamp">{new Date(message.timestamp).toLocaleTimeString()}</span>
+                        </strong>
+                        <span>{message.text}</span>
+                        <span className={styles.timestamp}>{new Date(message.timestamp).toLocaleTimeString()}</span>
                     </div>
                 ))}
             </div>
 
-            <div className="message-input-container">
+            <div className={styles.messageInputContainer}>
                 <input
                     type="text"
                     placeholder="Type your message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className="message-input"
+                    className={styles.messageInput}
                 />
-                <button onClick={sendMessage} className="send-button">
+                <button onClick={sendMessage} className={styles.sendButton}>
                     Send
                 </button>
             </div>

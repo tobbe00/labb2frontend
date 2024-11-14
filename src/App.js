@@ -1,25 +1,23 @@
-// src/App.js
 import React, { useState } from 'react';
-import { Route, Routes, Link } from 'react-router-dom';
+import { Route, Routes, Link, useNavigate } from 'react-router-dom';
 import './App.css';
-import Login from './login'; // Ensure this matches the case of the filename
-import Messages from './messages'; // Import the Messages component
-import ViewPatients from './viewPatients'; // Import the ViewPatients component
+import Login from './login';
+import Messages from './messages';
+import ViewPatients from './viewPatients';
 import PatientJournal from './PatientJournal';
-import ViewEmployees from "./viewEmployees";
-import SendMessagePage from "./SendMessagePage";
-import ChatRoom from "./chatRoom";
-import MakeNotePage from "./makeNotePage";
-import DiagnosePage from "./diagnosePage";
-//import PatientAppointments from './PatientAppointments';
-//import PatientConditions from './PatientConditions';
+import ViewEmployees from './viewEmployees';
+import SendMessagePage from './SendMessagePage';
+import ChatRoom from './chatRoom';
+import MakeNotePage from './makeNotePage';
+import DiagnosePage from './diagnosePage';
 
 function App() {
     const [user, setUser] = useState(() => {
-        // Hämta användarinformation från sessionStorage vid start om den finns
         const storedUser = sessionStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : { isLoggedIn: false, role: '' };
     });
+
+    const navigate = useNavigate();  // Initialize the navigate function
 
     const handleLogin = (userData) => {
         const { role, patientId, ...restUserInfo } = userData;
@@ -30,32 +28,29 @@ function App() {
         }
 
         setUser(userInfo);
-        sessionStorage.setItem("user", JSON.stringify(userInfo)); // Spara i sessionStorage
+        sessionStorage.setItem("user", JSON.stringify(userInfo)); // Save in sessionStorage
     };
-
 
     const handleLogout = () => {
         setUser({ isLoggedIn: false, role: '' });
-        sessionStorage.removeItem("user"); // Ta bort från sessionStorage
+        sessionStorage.removeItem("user"); // Remove from sessionStorage
+        navigate("/");  // Redirect to the Home page after logout
     };
 
     return (
         <div className="App">
-            {/* Navigation Bar */}
             <nav className="App-nav">
                 <Link to="/">Home</Link>
                 {user.isLoggedIn ? (
                     <>
                         <Link to="/messages">Messages</Link>
-
-                        {/* Visa "View Patients" och "View Employees" endast om användaren inte är patient */}
-                        {/* Visa "View Patients" och "View Employees" endast om användaren inte är patient */}
                         {user.role !== "Patient" ? (
-                            <>
-                                <Link to="/view-patients">View Patients</Link>
-                            </>
+                            <Link to="/view-patients">View Patients</Link>
                         ) : (
-                            <Link to="/view-employees">View Employees</Link> // This will display in the "else" case (when user is a Patient)
+                            <Link to="/view-employees">View Employees</Link>
+                        )}
+                        {user.isLoggedIn && user.role === "Patient" && user.patientId && (
+                            <Link to={`/patients/${user.patientId}/journal`}> My Journal</Link>
                         )}
 
                         <button onClick={handleLogout} className="logout-button">Logga ut</button>
@@ -65,24 +60,20 @@ function App() {
                 )}
             </nav>
 
-                {/* Define Routes */}
-                <Routes>
-                    <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                    <Route path="/messages" element={<Messages />} /> {/* Route to Messages component */}
-
-                    <Route path="/view-patients" element={<ViewPatients />} />
-                    <Route path="/patients/:id/journal" element={<PatientJournal />} />
-                    <Route path="/view-employees" element={<ViewEmployees/>}/>
-                    <Route path="/send-message/:employeeId" element={<SendMessagePage />} /> {/* The dynamic route */}
-                    <Route path="/chatRoom/:conversationId" element={<ChatRoom/>}/>
-                    <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} /> {/* New route for MakeNotePage */}
-                    <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
-                    <Route path="/" element={<h1>Welcome to the Patient Journal System</h1>} />
-                </Routes>
-            </div>
+            <Routes>
+                <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                <Route path="/messages" element={<Messages />} />
+                <Route path="/view-patients" element={<ViewPatients />} />
+                <Route path="/patients/:patientId/journal" element={<PatientJournal />} />
+                <Route path="/view-employees" element={<ViewEmployees />} />
+                <Route path="/send-message/:employeeId" element={<SendMessagePage />} />
+                <Route path="/chatRoom/:conversationId" element={<ChatRoom />} />
+                <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} />
+                <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
+                <Route path="/" element={<h1>Welcome {user.role} {user.name}</h1>} />
+            </Routes>
+        </div>
     );
 }
 
 export default App;
-
-

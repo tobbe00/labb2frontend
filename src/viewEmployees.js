@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import './viewEmployees.css';  // Importera CSS-filen för ViewEmployeesPage
 
 function ViewEmployeesPage() {
-    // State to hold the list of employees
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -11,7 +11,7 @@ function ViewEmployeesPage() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/employees/getAllEmployees'); // Replace with your actual API endpoint
+                const response = await fetch('http://localhost:8080/api/employees/getAllEmployees');
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch employees');
@@ -31,25 +31,25 @@ function ViewEmployeesPage() {
 
     return (
         <div className="employees-container">
-            <h2>Employees</h2>
+            <h2>Employees List</h2>
             {loading && <p>Loading employees...</p>}
             {error && <p className="error-message">{error}</p>}
 
             {employees.length > 0 ? (
-                <ul>
+                <ul className="employee-list">
                     {employees.map((employee) => (
                         <li key={employee.userId} className="employee-item">
-                            <hr />
-                            <span><strong>Name:</strong> {employee.name}</span>
-                            <span><strong>Status:</strong> {employee.status}</span>
+                            <div className="employee-info">
+                                <strong>{employee.name}</strong>
+                                <span>{employee.status}</span>
+                            </div>
 
-                            {/* Display button with action */}
-                            <Link to={`/send-message/${employee.userId}`}>
-                                <button className="message-button">
-                                    Message
-                                </button>
-                            </Link>
-                            <hr />
+                            {/* Buttons for each employee */}
+                            <div className="button-container">
+                                <Link to={`/send-message/${employee.userId}`}>
+                                    <button className="button">Message</button>
+                                </Link>
+                            </div>
                         </li>
                     ))}
                 </ul>

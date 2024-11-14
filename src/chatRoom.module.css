@@ -1,0 +1,83 @@
+/* ChatRoom.module.css */
+
+/* För chatroom-container */
+.chatroomContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;  /* Bredden på chatten */
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Meddelandekontainer: Ingen centrering här */
+.messagesContainer {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 400px;
+    width: 100%; /* Full bredd */
+    max-width: 800px; /* Fast bredd på meddelandekontainern */
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+/* Meddelande-item: Ta bort centrering, vänsterjustera */
+.messageItem {
+    margin-bottom: 10px;
+    text-align: left; /* Justera meddelandet till vänster */
+    width: 100%;  /* Sätt meddelandet till att använda full bredd */
+}
+
+/* Specifika stilar för dina meddelanden */
+.sent {
+    text-align: left;
+    color: blue;  /* Färgen för dina meddelanden */
+}
+
+.received {
+    text-align: left;
+    color: green; /* Färgen för mottagna meddelanden */
+}
+
+/* Tidsstämpel på meddelandet */
+.timestamp {
+    font-size: 0.8em;
+    color: #777;
+    margin-left: 10px;
+}
+
+/* Container för att skriva nya meddelanden */
+.messageInputContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+/* Meddelande input fält */
+.messageInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+/* Skicka-knappen */
+.sendButton {
+    padding: 8px 15px;
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 120px;  /* Minska storleken på knappen */
+    align-self: flex-start;  /* Placera knappen till vänster */
+}
+
+.sendButton:hover {
+    background-color: #21a1f1;
+}

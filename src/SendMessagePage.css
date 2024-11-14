@@ -1,0 +1,81 @@
+/* Container for the SendMessagePage */
+.send-message-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Title of the page */
+.send-message-container h1 {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* Form container for message input */
+.send-message-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Textarea for message title */
+textarea {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+/* Styling for message title textarea */
+textarea[placeholder="title"] {
+    font-weight: bold;
+}
+
+/* Styling for message textarea */
+textarea[placeholder="Write your message here..."] {
+    height: 120px;
+}
+
+/* Submit button styling */
+button[type="submit"] {
+    background-color: #61dafb;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+/* Hover effect for submit button */
+button[type="submit"]:hover {
+    background-color: #21a1f1;
+}
+
+/* Status message (success or error) */
+p {
+    font-size: 1rem;
+    text-align: center;
+    color: #333;
+}
+
+/* Styling for error or success status */
+p.error {
+    color: red;
+}
+
+p.success {
+    color: green;
+}
