@@ -70,7 +70,7 @@ function App() {
                 <Route path="/chatRoom/:conversationId" element={<ChatRoom />} />
                 <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} />
                 <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
-                <Route path="/" element={<h1>Welcome {user.role} {user.name}</h1>} />
+                <Route path="/" element={<h1>Welcome Hej {user.role} {user.name}</h1>} />
             </Routes>
         </div>
     );

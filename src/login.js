@@ -14,8 +14,10 @@ async function loginUser(credentials) {
         .then(res => res.json().then(data => {
             if (res.ok) {
                 console.log("här är datas som fås tbx"+data);
-                sessionStorage.setItem("userId",data.user.id);
-                return { success: true, authUser: data.user };
+                sessionStorage.setItem("userId", data.id); // Uppdaterad för att matcha LoginResponseDTO
+                sessionStorage.setItem("role", data.role); // Lagra rollen för användning i appen
+                return { success: true, authUser: data }; // Returnera hela `LoginResponseDTO`
+
             } else {
                 return { success: false, error: data.message || 'Misslyckades att logga in' };
             }
