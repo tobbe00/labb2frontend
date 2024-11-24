@@ -11,6 +11,7 @@ import ChatRoom from './chatRoom';
 import MakeNotePage from './makeNotePage';
 import DiagnosePage from './diagnosePage';
 import Pictures from "./pictures";
+import EditPictures from "./editPictures";
 
 function App() {
     const [user, setUser] = useState(() => {
@@ -74,6 +75,7 @@ function App() {
                 <Route path="/chatRoom/:conversationId" element={<ChatRoom />} />
                 <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} />
                 <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
+                <Route path="/edit" element={<EditPictures />} />
                 <Route path="/pictures" element={<Pictures/>}/>
                 <Route path="/" element={<h1>Welcome Hej {user.role} {user.name}</h1>} />
             </Routes>

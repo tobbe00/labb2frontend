@@ -2,45 +2,41 @@ import React, { useState } from 'react';
 
 const Pictures = () => {
     const [mode, setMode] = useState('upload'); // 'upload' or 'backend'
-    const [uploadedImage, setUploadedImage] = useState(null); // Selected image file from the computer
+    const [uploadedImageName, setUploadedImageName] = useState(null); // Name of the last uploaded image
     const [imageList, setImageList] = useState([]); // List of images fetched from the backend
-    const [selectedImage, setSelectedImage] = useState(null); // Currently selected image
+    const [selectedImage, setSelectedImage] = useState(null); // Currently selected image from the backend
     const [isImageSelected, setIsImageSelected] = useState(false); // To track if an image is selected
 
-    // Handle file input change
+    // Handle file input change (upload image)
     const handleFileChange = (e) => {
-        setUploadedImage(e.target.files[0]);
-    };
+        const file = e.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append('image', file);
 
-    // Upload image to the backend
-    const uploadImage = async () => {
-        if (!uploadedImage) {
-            alert('Please select an image first.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('image', uploadedImage);
-
-        try {
-            const response = await fetch('http://localhost:3000/images', {
+            // Upload image to the server
+            fetch('http://localhost:3001/images', {
                 method: 'POST',
                 body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to upload image');
-            }
-
-            alert('Image uploaded successfully!');
-            setUploadedImage(null); // Reset uploaded image
-        } catch (error) {
-            console.error(error);
-            alert('Error uploading image.');
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.filePath) {
+                        // Update the state with the uploaded image name
+                        setUploadedImageName(data.filePath);
+                        alert(`Image "${data.filePath}" uploaded successfully!`);
+                    } else {
+                        alert('Error uploading image');
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    alert('Error uploading image');
+                });
         }
     };
 
-    // Fetch image list from the backend (port 3001)
+    // Fetch image list from the backend
     const fetchImages = async () => {
         try {
             const response = await fetch('http://localhost:3001/images');
@@ -48,7 +44,6 @@ const Pictures = () => {
                 throw new Error('Failed to fetch images');
             }
             const data = await response.json();
-            // Correctly reference the 'files' array in the response
             if (data.files) {
                 setImageList(data.files); // Set the fetched image list
             } else {
@@ -60,27 +55,29 @@ const Pictures = () => {
         }
     };
 
-    // Handle image selection
+    // Handle image selection from backend
     const selectImage = (image) => {
         setSelectedImage(image);
-        setIsImageSelected(true); // Set to true when an image is selected
+        setIsImageSelected(true);
     };
 
-    // Navigate to the edit page
-    const goToEditPage = () => {
+    // Navigate to the edit page with a backend image
+    const fetchAndNavigateToEditPage = () => {
         if (selectedImage) {
-            window.location.href = `/edit?image=${encodeURIComponent(selectedImage)}`;
+            // Pass the image name in the URL to the edit page
+            window.location.href = `/edit?imageName=${encodeURIComponent(selectedImage)}`;
         } else {
             alert('Please select an image first.');
         }
     };
 
-    // Slider toggle handler
+    // Toggle between modes
     const toggleMode = (newMode) => {
         setMode(newMode);
-        setSelectedImage(null); // Reset the selected image when switching modes
-        setIsImageSelected(false); // Reset button state
-        setImageList([]); // Reset image list when switching to 'upload' mode
+        setSelectedImage(null);
+        setIsImageSelected(false);
+        setImageList([]);
+        setUploadedImageName(null); // Clear the uploaded image name when switching modes
     };
 
     return (
@@ -118,16 +115,19 @@ const Pictures = () => {
                 </button>
             </div>
 
-            {/* Content Based on Mode */}
+            {/* Upload Mode */}
             {mode === 'upload' && (
                 <div>
                     <input type="file" onChange={handleFileChange} />
-                    <button onClick={uploadImage} style={{ marginLeft: '10px' }}>
-                        Upload
-                    </button>
+                    {uploadedImageName && (
+                        <p style={{ color: 'green', marginTop: '10px' }}>
+                            Last uploaded image: {uploadedImageName}
+                        </p>
+                    )}
                 </div>
             )}
 
+            {/* Backend Mode */}
             {mode === 'backend' && (
                 <div>
                     <button onClick={fetchImages} style={{ marginBottom: '10px' }}>
@@ -167,11 +167,11 @@ const Pictures = () => {
                 </div>
             )}
 
-            {/* Select Image Button - Disabled initially */}
+            {/* Backend Edit Button */}
             {mode === 'backend' && (
                 <div style={{ marginTop: '20px' }}>
                     <button
-                        onClick={goToEditPage}
+                        onClick={fetchAndNavigateToEditPage}
                         disabled={!isImageSelected}
                         style={{
                             padding: '10px 20px',
