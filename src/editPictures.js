@@ -10,6 +10,7 @@ const EditPictures = () => {
     const [drawColor, setDrawColor] = useState('#000000'); // Drawing color
     const [isDrawing, setIsDrawing] = useState(false); // Is drawing in progress
     const [text, setText] = useState(''); // Text input for text mode
+    const [imageName, setImageName] = useState('edited-image'); // Name for the saved image
     const [boxSize] = useState({ width: 500, height: 500 }); // Box size
 
     useEffect(() => {
@@ -114,7 +115,7 @@ const EditPictures = () => {
 
         canvas.toBlob((blob) => {
             const formData = new FormData();
-            formData.append('image', blob, 'edited-image.png');
+            formData.append('image', blob, `${imageName || 'edited-image'}.png`);
 
             fetch('http://localhost:3001/images', {
                 method: 'POST',
@@ -176,6 +177,13 @@ const EditPictures = () => {
                                 style={{ marginRight: '10px' }}
                             />
                         )}
+                        <input
+                            type="text"
+                            value={imageName}
+                            onChange={(e) => setImageName(e.target.value)}
+                            placeholder="Image name"
+                            style={{ marginRight: '10px' }}
+                        />
                         <button onClick={saveImageToServer}>Save Image</button>
                     </div>
                 </div>
