@@ -10,6 +10,8 @@ import SendMessagePage from './SendMessagePage';
 import ChatRoom from './chatRoom';
 import MakeNotePage from './makeNotePage';
 import DiagnosePage from './diagnosePage';
+import Pictures from "./pictures";
+import EditPictures from "./editPictures";
 
 function App() {
     const [user, setUser] = useState(() => {
@@ -94,6 +96,9 @@ function App() {
                         {user.isLoggedIn && user.role === "Patient" && user.patientId && (
                             <Link to={`/patients/${user.patientId}/journal`}> My Journal</Link>
                         )}
+                        {user.role !== "Patient"&&(
+                            <Link to="/pictures">Pictures</Link>
+                        )}
 
                         <button onClick={handleLogout} className="logout-button">Logga ut</button>
                     </>
@@ -112,6 +117,8 @@ function App() {
                 <Route path="/chatRoom/:conversationId" element={<ChatRoom />} />
                 <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} />
                 <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
+                <Route path="/edit" element={<EditPictures />} />
+                <Route path="/pictures" element={<Pictures/>}/>
                 <Route path="/" element={
                     <div>
                         <h1>Welcome {user.role} {user.name}</h1>
