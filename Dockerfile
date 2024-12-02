@@ -1,19 +1,15 @@
-FROM node:14
-
+# Steg 1: Bygg frontenden
+FROM node:14 AS build
 WORKDIR /app
-
-# Kopiera över package.json och package-lock.json för att installera beroenden
-COPY ./package.json /app/
-COPY ./package-lock.json /app/
-
-# Installera alla beroenden (inklusive devDependencies)
+COPY ./package.json ./package-lock.json /app/
 RUN npm install
-
-# Kopiera all kod från din lokala frontend-mapp till containern
 COPY . /app
+RUN npm run build
 
-# Exponera porten som React utvecklingsservern kommer att använda
-EXPOSE 3000
-
-# Starta utvecklingsservern (React) i utvecklingsläge
-CMD ["npm", "start"]
+# Steg 2: Servera med "serve"
+FROM node:14
+WORKDIR /app
+RUN npm install -g serve
+COPY --from=build /app/build ./build
+EXPOSE 8080
+CMD ["serve", "-s", "build", "-l", "8080"]
