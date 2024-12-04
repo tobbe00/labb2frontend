@@ -15,7 +15,7 @@ const Pictures = () => {
             formData.append('image', file);
 
             // Upload image to the server
-            fetch('https://labb2pictures.app.cloud.cbh.kth.se/', {
+            fetch('https://labb2pictures.app.cloud.cbh.kth.se', {
                 method: 'POST',
                 body: formData,
             })
@@ -39,7 +39,7 @@ const Pictures = () => {
     // Fetch image list from the backend
     const fetchImages = async () => {
         try {
-            const response = await fetch('https://labb2pictures.app.cloud.cbh.kth.se/');
+            const response = await fetch('https://labb2pictures.app.cloud.cbh.kth.se');
             if (!response.ok) {
                 throw new Error('Failed to fetch images');
             }
