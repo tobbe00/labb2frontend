@@ -11,7 +11,7 @@ function ViewEmployeesPage() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await fetch('https://labb2messages.app.cloud.cbh.kth.se/api/employees/getAllEmployees');
+                const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/employees/getAllEmployees');
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch employees');
