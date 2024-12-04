@@ -54,7 +54,7 @@ function SendMessagePage() {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/messages/sendFirstMessage', {
+            const response = await fetch('https://labb2messages.app.cloud.cbh.kth.se/api/messages/sendFirstMessage', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody),

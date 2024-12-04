@@ -13,7 +13,7 @@ function PatientJournal() {
         const fetchPatientJournal = async () => {
             try {
                 // Hämta journalen för den valda patienten
-                const response = await fetch(`http://localhost:8080/api/patients/${patientId}/journal`);
+                const response = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/${patientId}/journal`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch journal');
                 }

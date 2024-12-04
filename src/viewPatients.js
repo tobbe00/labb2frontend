@@ -10,7 +10,7 @@ function ViewPatients() {
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                const response = await fetch("http://localhost:8080/api/patients");
+                const response = await fetch("https://labb2journal.app.cloud.cbh.kth.se/api/patients");
                 if (!response.ok) {
                     throw new Error(`Error fetching patients: ${response.statusText}`);
                 }

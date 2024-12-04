@@ -24,7 +24,7 @@ function Conversations() {
             if (!userId) return; // Prevent the fetch if userId is null
 
             try {
-                const response = await fetch(`http://localhost:8080/api/conversations/yourConversations/${userId}`);
+                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/conversations/yourConversations/${userId}`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch conversations');

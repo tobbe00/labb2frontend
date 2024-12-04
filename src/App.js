@@ -51,7 +51,7 @@ function App() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/search/patients?${params.toString()}`);
+            const response = await fetch(`https://labb2search.app.cloud.cbh.kth.se/search/patients?${params.toString()}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch patients');
             }
@@ -69,7 +69,7 @@ function App() {
     const handleSearchDoctors = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8080/search/doctor/patients?doctorName=${searchDoctorInput}`);
+            const response = await fetch(`https://labb2search.app.cloud.cbh.kth.se/search/doctor/patients?doctorName=${searchDoctorInput}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch doctor\'s patients');
             }

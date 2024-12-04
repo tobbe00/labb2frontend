@@ -51,7 +51,7 @@ function DiagnosePage() {
 
         // Make the POST request to save the condition
         try {
-            const response = await fetch('http://localhost:8080/api/patients/makeDiagnosis', {
+            const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/patients/makeDiagnosis', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

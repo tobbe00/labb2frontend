@@ -12,7 +12,7 @@ function ChatRoom({ userId }) {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/messages/getConvoMessages/${conversationId}`);
+                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/messages/getConvoMessages/${conversationId}`);
                 if (!response.ok) throw new Error('Failed to fetch messages');
 
                 const data = await response.json();

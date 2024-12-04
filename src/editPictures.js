@@ -22,7 +22,7 @@ const EditPictures = () => {
             setImageData(decodeURIComponent(encodedImageData));
             setLoading(false);
         } else if (imageName) {
-            fetch(`http://localhost:3001/images/${imageName}`)
+            fetch(`https://labb2pictures.app.cloud.cbh.kth.se/images/${imageName}`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch the image from the server.');
@@ -117,7 +117,7 @@ const EditPictures = () => {
             const formData = new FormData();
             formData.append('image', blob, `${imageName || 'edited-image'}.png`);
 
-            fetch('http://localhost:3001/images', {
+            fetch('https://labb2pictures.app.cloud.cbh.kth.se/images', {
                 method: 'POST',
                 body: formData,
             })
