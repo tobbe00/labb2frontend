@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './login.css';
 
 async function loginUser(credentials) {
-    return fetch('https://fullstacklab.app.cloud.cbh.kth.se/api/users/login', {
+    return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ async function loginUser(credentials) {
 
 
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
-    return fetch('https://fullstacklab.app.cloud.cbh.kth.se/api/users/register', {
+    return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
