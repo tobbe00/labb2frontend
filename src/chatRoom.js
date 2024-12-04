@@ -30,7 +30,7 @@ function ChatRoom({ userId }) {
         if (!newMessage.trim()) return;  // Prevent sending empty messages
 
         try {
-            const response = await fetch(`http://localhost:8080/api/messages/sendMessageInConvo`, {
+            const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/messages/sendMessageInConvo`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
