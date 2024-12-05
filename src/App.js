@@ -122,72 +122,73 @@ function App() {
                 <Route path="/" element={
                     <div>
                         <h1>Welcome {user.role} {user.name}</h1>
-                        <div>
-                            {/* Patient search */}
-                            <h2>Search Patients</h2>
-                            <form onSubmit={handleSearchPatients}>
-                                <input
-                                    type="text"
-                                    placeholder="Search Patients (name, condition, age, etc.)"
-                                    value={searchPatientInput}
-                                    onChange={(e) => setSearchPatientInput(e.target.value)}
-                                />
-                                <button type="submit">Search</button>
-                            </form>
+                        {user.isLoggedIn && (user.role === "Doctor" || user.role === "Worker") && (
+                            <div>
+                                {/* Patient search */}
+                                <h2>Search Patients</h2>
+                                <form onSubmit={handleSearchPatients}>
+                                    <input
+                                        type="text"
+                                        placeholder="Search Patients (name, condition, age, etc.)"
+                                        value={searchPatientInput}
+                                        onChange={(e) => setSearchPatientInput(e.target.value)}
+                                    />
+                                    <button type="submit">Search</button>
+                                </form>
 
-                            {/* Doctor search */}
-                            <h2>Search Doctors</h2>
-                            <form onSubmit={handleSearchDoctors}>
-                                <input
-                                    type="text"
-                                    placeholder="Search Doctors by Name"
-                                    value={searchDoctorInput}
-                                    onChange={(e) => setSearchDoctorInput(e.target.value)}
-                                />
-                                <button type="submit">Search</button>
-                            </form>
-                        </div>
-                        <div>
-                            <h3>Search Results</h3>
-                            {/* Om searchResults är en array (Patient Search) */}
-                            {Array.isArray(searchResults) ? (
-                                <ul>
-                                    {searchResults.length > 0 ? (
-                                        searchResults.map((patient, index) => (
-                                            <li key={index}>
-                                                {patient.name} - {patient.gender || "N/A"} - {patient.age || "N/A"} years
-                                                old
-                                            </li>
-                                        ))
+                                {/* Doctor search */}
+                                <h2>Search Doctors</h2>
+                                <form onSubmit={handleSearchDoctors}>
+                                    <input
+                                        type="text"
+                                        placeholder="Search Doctors by Name"
+                                        value={searchDoctorInput}
+                                        onChange={(e) => setSearchDoctorInput(e.target.value)}
+                                    />
+                                    <button type="submit">Search</button>
+                                </form>
+
+                                <div>
+                                    <h3>Search Results</h3>
+                                    {/* Om searchResults är en array (Patient Search) */}
+                                    {Array.isArray(searchResults) ? (
+                                        <ul>
+                                            {searchResults.length > 0 ? (
+                                                searchResults.map((patient, index) => (
+                                                    <li key={index}>
+                                                        {patient.name} - {patient.gender || "N/A"} - {patient.age || "N/A"} years old
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <p>No results found</p>
+                                            )}
+                                        </ul>
                                     ) : (
-                                        <p>No results found</p>
+                                        /* Om searchResults är ett objekt (Doctor Search) */
+                                        Object.keys(searchResults).length > 0 ? (
+                                            Object.entries(searchResults).map(([patientName, observations], index) => (
+                                                <div key={index}>
+                                                    <h4>{patientName}</h4>
+                                                    <ul>
+                                                        {Array.isArray(observations) && observations.length > 0 ? (
+                                                            observations.map((obs, idx) => (
+                                                                <li key={idx}>
+                                                                    Date: {obs.date} - Description: {obs.description}
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <li>No observations available</li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No results found</p>
+                                        )
                                     )}
-                                </ul>
-                            ) : (
-                                /* Om searchResults är ett objekt (Doctor Search) */
-                                Object.keys(searchResults).length > 0 ? (
-                                    Object.entries(searchResults).map(([patientName, observations], index) => (
-                                        <div key={index}>
-                                            <h4>{patientName}</h4>
-                                            <ul>
-                                                {Array.isArray(observations) && observations.length > 0 ? (
-                                                    observations.map((obs, idx) => (
-                                                        <li key={idx}>
-                                                            Date: {obs.date} - Description: {obs.description}
-                                                        </li>
-                                                    ))
-                                                ) : (
-                                                    <li>No observations available</li>
-                                                )}
-                                            </ul>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p>No results found</p>
-                                )
-                            )}
-                        </div>
-
+                                </div>
+                            </div>
+                        )}
                     </div>
                 }/>
             </Routes>
