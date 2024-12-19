@@ -26,7 +26,7 @@ async function loginUser(credentials) {
     // Encode the body as application/x-www-form-urlencoded
     const body = new URLSearchParams({
         grant_type: "password",
-        client_id: clientId,
+        client_id: "frontend-app",
         username: credentials.email, // Pass email as username
         password: credentials.password, // Password field
         scope: "openid",
