@@ -20,22 +20,42 @@ const handleLogin = async (e) => {
 
 
 async function loginUser(credentials) {
-    return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/login', {
+    const keycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/fullstack_labb3/protocol/openid-connect/token";
+    const clientId = "labb2frontend";
+
+    const body = new URLSearchParams({
+        grant_type: "password",
+        client_id: clientId,
+        username: credentials.email,
+        password: credentials.password,
+        scope: "openid",
+    });
+
+    return fetch(keycloakUrl, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify(credentials)
+        body: body.toString()
     })
         .then(res => res.json().then(data => {
             if (res.ok) {
+                const { access_token, refresh_token } = data;
 
-                sessionStorage.setItem("userId", data.id); // Uppdaterad för att matcha LoginResponseDTO
-                sessionStorage.setItem("role", data.role); // Lagra rollen för användning i appen
-                return { success: true, authUser: data }; // Returnera hela `LoginResponseDTO`
+                // Save tokens in sessionStorage
+                sessionStorage.setItem("access_token", access_token);
+                sessionStorage.setItem("refresh_token", refresh_token);
 
+                // Decode the access token to get user information
+                const userInfo = JSON.parse(atob(access_token.split(".")[1]));
+
+                // Save user information in sessionStorage
+                sessionStorage.setItem("user", JSON.stringify(userInfo));
+                console.log("hey it worked to log in");
+                return { success: true, authUser: userInfo }; // Return user info for further use
             } else {
-                return { success: false, error: data.message || 'Misslyckades att logga in' };
+                console.log("log in failed ;(");
+                return { success: false, error: data.error_description || 'Misslyckades att logga in' };
             }
         }))
         .catch(error => {
@@ -43,7 +63,6 @@ async function loginUser(credentials) {
             return { success: false, error: 'Ett fel inträffade vid inloggning' };
         });
 }
-
 
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
     return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
