@@ -17,7 +17,7 @@ import EditPictures from './editPictures';
 const keycloak = new Keycloak({
     url: 'https://keycloak-for-lab3.app.cloud.cbh.kth.se',
     realm: 'fullstack_labb3',
-     // Ensure this matches your Keycloak client ID exactly
+    clientId: 'labb2frontend', // Ensure this matches your Keycloak client ID exactly
 });
 
 function App() {
