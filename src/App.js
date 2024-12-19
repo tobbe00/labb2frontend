@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Routes, Link, useNavigate } from 'react-router-dom';
+import Keycloak from 'keycloak-js';
 import './App.css';
 import Login from './login';
 import Messages from './messages';
@@ -10,8 +11,14 @@ import SendMessagePage from './SendMessagePage';
 import ChatRoom from './chatRoom';
 import MakeNotePage from './makeNotePage';
 import DiagnosePage from './diagnosePage';
-import Pictures from "./pictures";
-import EditPictures from "./editPictures";
+import Pictures from './pictures';
+import EditPictures from './editPictures';
+
+const keycloak = new Keycloak({
+    url: 'https://keycloak-for-lab3.app.cloud.cbh.kth.se',
+    realm: 'fullstack_labb3',
+    clientId: 'labb2frontend',
+});
 
 function App() {
     const [user, setUser] = useState(() => {
@@ -24,22 +31,35 @@ function App() {
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
 
-    const handleLogin = (userData) => {
-        const { role, patientId, ...restUserInfo } = userData;
-        const userInfo = { isLoggedIn: true, ...restUserInfo, role };
+    useEffect(() => {
+        // Initialize Keycloak and check if the user is logged in
+        keycloak.init({ onLoad: 'check-sso', checkLoginIframe: false }).then((authenticated) => {
+            if (authenticated) {
+                const userData = {
+                    isLoggedIn: true,
+                    name: keycloak.tokenParsed.name,
+                    role: keycloak.tokenParsed.realm_access.roles[0],
+                };
+                setUser(userData);
+                sessionStorage.setItem('user', JSON.stringify(userData));
+            }
+        }).catch((err) => {
+            console.error('Error during Keycloak initialization:', err);
+        });
+    }, []);
 
-        if (role === "Patient" && patientId) {
-            userInfo.patientId = patientId;
-        }
-
-        setUser(userInfo);
-        sessionStorage.setItem("user", JSON.stringify(userInfo));
+    const handleLogin = () => {
+        // Trigger Keycloak login
+        keycloak.login();
     };
 
     const handleLogout = () => {
-        setUser({ isLoggedIn: false, role: '' });
-        sessionStorage.removeItem("user");
-        navigate("/");
+        // Logout from Keycloak and remove the user data from session storage
+        keycloak.logout().then(() => {
+            setUser({ isLoggedIn: false, role: '' });
+            sessionStorage.removeItem('user');
+            navigate('/');
+        });
     };
 
     const handleSearchPatients = async (e) => {
@@ -47,7 +67,7 @@ function App() {
         const params = new URLSearchParams();
 
         if (searchPatientInput) {
-            params.append('query', searchPatientInput); // Skicka söktexten som 'query'
+            params.append('query', searchPatientInput); // Send search text as 'query'
         }
 
         try {
@@ -63,9 +83,6 @@ function App() {
         }
     };
 
-
-
-
     const handleSearchDoctors = async (e) => {
         e.preventDefault();
         try {
@@ -75,7 +92,7 @@ function App() {
             }
             const data = await response.json();
             console.log('Doctor Search Results:', data);
-            setSearchResults(data); // Här sparas resultatet som en strukturerad JSON
+            setSearchResults(data); // Store the results as structured JSON
         } catch (error) {
             console.error('Error searching doctors:', error);
         }
@@ -93,17 +110,16 @@ function App() {
                         ) : (
                             <Link to="/view-employees">View Employees</Link>
                         )}
-                        {user.isLoggedIn && user.role === "Patient" && user.patientId && (
-                            <Link to={`/patients/${user.patientId}/journal`}> My Journal</Link>
+                        {user.isLoggedIn && user.role === "Patient" && (
+                            <Link to={`/patients/${user.patientId}/journal`}>My Journal</Link>
                         )}
-                        {user.role !== "Patient"&&(
+                        {user.role !== "Patient" && (
                             <Link to="/pictures">Pictures</Link>
                         )}
-
-                        <button onClick={handleLogout} className="logout-button">Logga ut</button>
+                        <button onClick={handleLogout} className="logout-button">Logout</button>
                     </>
                 ) : (
-                    <Link to="/login">Login</Link>
+                    <button onClick={handleLogin}>Login with Keycloak</button>
                 )}
             </nav>
 
@@ -118,13 +134,12 @@ function App() {
                 <Route path="/patients/:patientId/makeNotePage" element={<MakeNotePage />} />
                 <Route path="/patients/:patientId/diagnosePage" element={<DiagnosePage />} />
                 <Route path="/edit" element={<EditPictures />} />
-                <Route path="/pictures" element={<Pictures/>}/>
+                <Route path="/pictures" element={<Pictures />} />
                 <Route path="/" element={
                     <div>
                         <h1>Welcome {user.role} {user.name}</h1>
                         {user.isLoggedIn && (user.role === "Doctor" || user.role === "Worker") && (
                             <div>
-                                {/* Patient search */}
                                 <h2>Search Patients</h2>
                                 <form onSubmit={handleSearchPatients}>
                                     <input
@@ -135,8 +150,6 @@ function App() {
                                     />
                                     <button type="submit">Search</button>
                                 </form>
-
-                                {/* Doctor search */}
                                 <h2>Search Doctors</h2>
                                 <form onSubmit={handleSearchDoctors}>
                                     <input
@@ -147,50 +160,10 @@ function App() {
                                     />
                                     <button type="submit">Search</button>
                                 </form>
-
-                                <div>
-                                    <h3>Search Results</h3>
-                                    {/* Om searchResults är en array (Patient Search) */}
-                                    {Array.isArray(searchResults) ? (
-                                        <ul>
-                                            {searchResults.length > 0 ? (
-                                                searchResults.map((patient, index) => (
-                                                    <li key={index}>
-                                                        {patient.name} - {patient.gender || "N/A"} - {patient.age || "N/A"} years old
-                                                    </li>
-                                                ))
-                                            ) : (
-                                                <p>No results found</p>
-                                            )}
-                                        </ul>
-                                    ) : (
-                                        /* Om searchResults är ett objekt (Doctor Search) */
-                                        Object.keys(searchResults).length > 0 ? (
-                                            Object.entries(searchResults).map(([patientName, observations], index) => (
-                                                <div key={index}>
-                                                    <h4>{patientName}</h4>
-                                                    <ul>
-                                                        {Array.isArray(observations) && observations.length > 0 ? (
-                                                            observations.map((obs, idx) => (
-                                                                <li key={idx}>
-                                                                    Date: {obs.date} - Description: {obs.description}
-                                                                </li>
-                                                            ))
-                                                        ) : (
-                                                            <li>No observations available</li>
-                                                        )}
-                                                    </ul>
-                                                </div>
-                                            ))
-                                        ) : (
-                                            <p>No results found</p>
-                                        )
-                                    )}
-                                </div>
                             </div>
                         )}
                     </div>
-                }/>
+                } />
             </Routes>
         </div>
     );

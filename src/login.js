@@ -2,6 +2,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
+import Keycloak from "keycloak-js"; // Import Keycloak instance
+
+// Initialize Keycloak
+const keycloak = new Keycloak({
+    url: "https://keycloak-for-lab3.app.cloud.cbh.kth.se/",
+    realm: "fullstack_labb3",
+    clientId: "labb2frontend",
+});
+
+// In your handleLogin
+const handleLogin = async (e) => {
+    e.preventDefault(); // Prevent form submission
+    keycloak.login(); // Redirects to Keycloak login page
+};
+
+
 
 async function loginUser(credentials) {
     return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/login', {
@@ -13,7 +29,7 @@ async function loginUser(credentials) {
     })
         .then(res => res.json().then(data => {
             if (res.ok) {
-                console.log("här är datas som fås tbx"+data);
+
                 sessionStorage.setItem("userId", data.id); // Uppdaterad för att matcha LoginResponseDTO
                 sessionStorage.setItem("role", data.role); // Lagra rollen för användning i appen
                 return { success: true, authUser: data }; // Returnera hela `LoginResponseDTO`
@@ -60,7 +76,6 @@ function Login({ onLogin }) {
     const handleLogin = async (e) => {
         e.preventDefault();
         const result = await loginUser({ email, password });
-        console.log(result);
         if (result.success) {
             onLogin(result.authUser);
             setErrorMessage('');
