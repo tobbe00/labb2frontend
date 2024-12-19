@@ -23,46 +23,50 @@ async function loginUser(credentials) {
     const keycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/fullstack_labb3/protocol/openid-connect/token";
     const clientId = "labb2frontend";
 
+    // Encode the body as application/x-www-form-urlencoded
     const body = new URLSearchParams({
         grant_type: "password",
         client_id: clientId,
-        username: credentials.email,
-        password: credentials.password,
+        username: credentials.email, // Pass email as username
+        password: credentials.password, // Password field
         scope: "openid",
     });
 
-    return fetch(keycloakUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body.toString()
-    })
-        .then(res => res.json().then(data => {
-            if (res.ok) {
-                const { access_token, refresh_token } = data;
-
-                // Save tokens in sessionStorage
-                sessionStorage.setItem("access_token", access_token);
-                sessionStorage.setItem("refresh_token", refresh_token);
-
-                // Decode the access token to get user information
-                const userInfo = JSON.parse(atob(access_token.split(".")[1]));
-
-                // Save user information in sessionStorage
-                sessionStorage.setItem("user", JSON.stringify(userInfo));
-                console.log("hey it worked to log in");
-                return { success: true, authUser: userInfo }; // Return user info for further use
-            } else {
-                console.log("log in failed ;(");
-                return { success: false, error: data.error_description || 'Misslyckades att logga in' };
-            }
-        }))
-        .catch(error => {
-            console.error('Inloggningsfel:', error);
-            return { success: false, error: 'Ett fel inträffade vid inloggning' };
+    try {
+        const response = await fetch(keycloakUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // Ensure correct Content-Type
+            },
+            body: body.toString(), // Serialize the body
         });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("Login successful:", data);
+
+            // Save tokens to session storage
+            const { access_token, refresh_token } = data;
+
+            sessionStorage.setItem("access_token", access_token);
+            sessionStorage.setItem("refresh_token", refresh_token);
+
+            // Decode user info from the JWT token
+            const userInfo = JSON.parse(atob(access_token.split(".")[1]));
+            sessionStorage.setItem("user", JSON.stringify(userInfo));
+
+            return { success: true, authUser: userInfo };
+        } else {
+            console.error("Login failed:", data);
+            return { success: false, error: data.error_description || "Login failed" };
+        }
+    } catch (error) {
+        console.error("Network error during login:", error);
+        return { success: false, error: "Network error" };
+    }
 }
+
 
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
     return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
