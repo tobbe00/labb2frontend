@@ -17,7 +17,7 @@ import EditPictures from './editPictures';
 const keycloak = new Keycloak({
     url: 'https://keycloak-for-lab3.app.cloud.cbh.kth.se',
     realm: 'fullstack_labb3',
-    clientId: 'labb2frontend',
+     // Ensure this matches your Keycloak client ID exactly
 });
 
 function App() {
@@ -32,8 +32,12 @@ function App() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Initialize Keycloak and check if the user is logged in
-        keycloak.init({ onLoad: 'check-sso', checkLoginIframe: false }).then((authenticated) => {
+        // We will no longer initialize Keycloak in useEffect. Instead, we will do it when the user clicks the login button.
+    }, []);
+
+    const handleLogin = () => {
+        // Initialize Keycloak and trigger login
+        keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then((authenticated) => {
             if (authenticated) {
                 const userData = {
                     isLoggedIn: true,
@@ -46,11 +50,6 @@ function App() {
         }).catch((err) => {
             console.error('Error during Keycloak initialization:', err);
         });
-    }, []);
-
-    const handleLogin = () => {
-        // Trigger Keycloak login
-        keycloak.login();
     };
 
     const handleLogout = () => {
