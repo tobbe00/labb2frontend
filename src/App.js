@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Link, useNavigate } from 'react-router-dom';
-import Keycloak from 'keycloak-js';
 import './App.css';
 import Login from './login';
 import Messages from './messages';
@@ -14,11 +13,9 @@ import DiagnosePage from './diagnosePage';
 import Pictures from './pictures';
 import EditPictures from './editPictures';
 
-const keycloak = new Keycloak({
-    url: 'https://keycloak-for-lab3.app.cloud.cbh.kth.se',
-    realm: 'fullstack_labb3',
-    clientId: 'labb2frontend', // Ensure this matches your Keycloak client ID exactly
-});
+function handleLogout() {
+
+}
 
 function App() {
     const [user, setUser] = useState(() => {
@@ -30,36 +27,6 @@ function App() {
     const [searchDoctorInput, setSearchDoctorInput] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        // We will no longer initialize Keycloak in useEffect. Instead, we will do it when the user clicks the login button.
-    }, []);
-
-    const handleLogin = () => {
-        // Initialize Keycloak and trigger login
-        keycloak.init({ onLoad: 'login-required', checkLoginIframe: false }).then((authenticated) => {
-            if (authenticated) {
-                const userData = {
-                    isLoggedIn: true,
-                    name: keycloak.tokenParsed.name,
-                    role: keycloak.tokenParsed.realm_access.roles[0],
-                };
-                setUser(userData);
-                sessionStorage.setItem('user', JSON.stringify(userData));
-            }
-        }).catch((err) => {
-            console.error('Error during Keycloak initialization:', err);
-        });
-    };
-
-    const handleLogout = () => {
-        // Logout from Keycloak and remove the user data from session storage
-        keycloak.logout().then(() => {
-            setUser({ isLoggedIn: false, role: '' });
-            sessionStorage.removeItem('user');
-            navigate('/');
-        });
-    };
 
     const handleSearchPatients = async (e) => {
         e.preventDefault();
@@ -118,12 +85,12 @@ function App() {
                         <button onClick={handleLogout} className="logout-button">Logout</button>
                     </>
                 ) : (
-                    <button onClick={handleLogin}>Login with Keycloak</button>
+                    <Link to="/login" className="login-button">Login</Link>
                 )}
             </nav>
 
             <Routes>
-                <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/messages" element={<Messages />} />
                 <Route path="/view-patients" element={<ViewPatients />} />
                 <Route path="/patients/:patientId/journal" element={<PatientJournal />} />
