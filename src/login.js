@@ -81,7 +81,7 @@ function Login({ onLogin }) {
 
         if (loginResult.success) {
             setErrorMessage('');
-            onLogin(loginResult.authUser); // Notify parent component about successful login
+            //onLogin(loginResult.authUser); // Notify parent component about successful login
             navigate('/dashboard'); // Redirect to the dashboard or home page
         } else {
             setErrorMessage(loginResult.error);
