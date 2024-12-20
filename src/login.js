@@ -6,7 +6,7 @@ import './login.css';
 const adminKeycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/master/protocol/openid-connect/token";
 const keycloakAdminClientId = "admin-cli";
 const keycloakAdminUsername = "admin";
-const keycloakAdminPassword = "admin-password"; // Replace with real credentials
+const keycloakAdminPassword = "admin"; // Replace with real credentials
 
 const clientKeycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/fullstack_labb3/protocol/openid-connect/token";
 const clientId = "labb2frontend"; // Your frontend client ID
