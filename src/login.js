@@ -27,11 +27,15 @@ async function getAdminAccessToken() {
             body: body.toString(),
         });
 
-        const data = await response.json();
+        // Check if the response is successful
         if (response.ok) {
-            return data.access_token;
+            console.log("yo like we shuld actiually be getting the admin token");
+            const data = await response.json();  // Parse JSON only if response is OK
+            return data.access_token;  // Return the token if available
         } else {
-            console.error("Failed to fetch admin token:", data);
+            // If not successful, attempt to read error data
+            const errorData = await response.json();
+            console.error("Failed to fetch admin token:", errorData);
             return null;
         }
     } catch (error) {
@@ -39,6 +43,7 @@ async function getAdminAccessToken() {
         return null;
     }
 }
+
 
 // Register user in Keycloak
 async function registerUserInKeycloak(adminToken, { email, password, role }) {
