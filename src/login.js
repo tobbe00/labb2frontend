@@ -11,106 +11,21 @@ const keycloakAdminPassword = "admin"; // Replace with real credentials
 const clientKeycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/fullstack_labb3/protocol/openid-connect/token";
 const clientId = "labb2frontend"; // Your frontend client ID
 
-// Fetch admin token for Keycloak
-async function getAdminAccessToken() {
-    const body = new URLSearchParams({
-        grant_type: "password",
-        client_id: keycloakAdminClientId,
-        username: keycloakAdminUsername,
-        password: keycloakAdminPassword,
-    });
-
-    try {
-        const response = await fetch(adminKeycloakUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: body.toString(),
-        });
-
-        // Check if the response is successful
-        if (response.ok) {
-            console.log("yo like we shuld actiually be getting the admin token");
-            const data = await response.json();  // Parse JSON only if response is OK
-            return data.access_token;  // Return the token if available
-        } else {
-            // If not successful, attempt to read error data
-            const errorData = await response.json();
-            console.error("Failed to fetch admin token:", errorData);
-            return null;
-        }
-    } catch (error) {
-        console.error("Error fetching admin token:", error);
-        return null;
-    }
-}
 
 
-// Register user in Keycloak
-async function registerUserInKeycloak(adminToken, { email, password, role }) {
-    const registrationUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/admin/realms/fullstack_labb3/users";
-
-    const body = {
-        username: email,
-        email,
-        enabled: true,
-        credentials: [
-            {
-                type: "password",
-                value: password,
-                temporary: false,
-            },
-        ],
-        attributes: {
-            role, // Assign the role as a custom attribute
+async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
+    return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         },
-    };
-
-    try {
-        const response = await fetch(registrationUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${adminToken}`,
-            },
-            body: JSON.stringify(body),
-        });
-
-        if (response.ok) {
-            console.log("User registered in Keycloak successfully.");
-            return { success: true };
-        } else {
-            const data = await response.json();
-            console.error("Keycloak registration failed:", data);
-            return { success: false, error: data.error };
-        }
-    } catch (error) {
-        console.error("Error during Keycloak registration:", error);
-        return { success: false, error: "Network error during Keycloak registration" };
-    }
-}
-
-// Register user in your backend
-async function registerUserInBackend({ name, email, gender, role, age, address, organizationName, speciality, roleTitle }) {
-    try {
-        const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, email, gender, role, age, address, organizationName, speciality, roleTitle }),
-        });
-
-        if (response.ok) {
-            console.log("User registered in backend successfully.");
-            return { success: true };
-        } else {
-            console.error("Backend registration failed:", await response.json());
-            return { success: false, error: 'Failed to register user in backend' };
-        }
-    } catch (error) {
-        console.error("Error during backend registration:", error);
-        return { success: false, error: "Network error during backend registration" };
-    }
+        body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
+    }).then(response => {
+        if (response.ok) return { success: true };
+        throw response;
+    }).catch(_ => {
+        return { success: false, error: 'Misslyckades att registrera användare' };
+    });
 }
 
 // Login user
@@ -182,77 +97,162 @@ function Login({ onLogin }) {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        const adminToken = await getAdminAccessToken();
-        if (!adminToken) {
-            setErrorMessage("Failed to fetch admin token.");
-            return;
-        }
-
-        const keycloakResult = await registerUserInKeycloak(adminToken, {
-            email,
-            password,
-            role,
-        });
-
-        if (!keycloakResult.success) {
-            setErrorMessage(keycloakResult.error || "Keycloak registration failed.");
-            return;
-        }
-
+        // Filtrera ut tomma fält från extraFields
         const filteredExtraFields = Object.fromEntries(
             Object.entries(extraFields).filter(([_, value]) => value !== "")
         );
 
-        const backendResult = await registerUserInBackend({
+        const data = {
             name,
             gender,
             email,
+            password,
             role,
-            ...filteredExtraFields,
-        });
+            ...filteredExtraFields // Använd de filtrerade extra fälten
+        };
 
-        if (backendResult.success) {
+        console.log("Registreringsdata:", data); // Kontrollera vad som skickas efter filtrering
+
+        const result = await registerUser(data);
+        if (result.success) {
             setShowRegister(false);
             setErrorMessage('');
             setEmail('');
             setPassword('');
             navigate("/login");
         } else {
-            setErrorMessage(backendResult.error);
+            setErrorMessage(result.error);
         }
+    };
+
+    const handleRoleChange = (e) => {
+        setRole(e.target.value);
+        setExtraFields({ age: '', address: '', organizationName: '', speciality: '', roleTitle: '' });
+    };
+
+    const handleExtraFieldChange = (e) => {
+        const { name, value } = e.target;
+        setExtraFields({
+            ...extraFields,
+            [name]: value,
+        });
     };
 
     return (
         <div className="login-container">
-            <h2>{showRegister ? 'Register' : 'Login'}</h2>
+            <h2>{showRegister ? 'Registrera' : 'Logga in'}</h2>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form onSubmit={showRegister ? handleRegister : handleLogin}>
                 {showRegister && (
                     <>
                         <div>
-                            <label>Full Name:</label>
+                            <label>Välj roll:</label>
+                            <select value={role} onChange={handleRoleChange}>
+                                <option value="Patient">Patient</option>
+                                <option value="Doctor">Doctor</option>
+                                <option value="Worker">Worker</option>
+                            </select>
+                        </div>
+
+                        {/* Dynamiska fält beroende på vald roll */}
+                        {role === 'Patient' && (
+                            <div>
+                                <label>Ålder:</label>
+                                <input
+                                    type="number"
+                                    name="age"
+                                    value={extraFields.age}
+                                    onChange={handleExtraFieldChange}
+                                    required
+                                />
+                            </div>
+                        )}
+                        {role === 'Doctor' && (
+                            <>
+                                <div>
+                                    <label>Adress:</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={extraFields.address}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label>Organisationsnamn:</label>
+                                    <input
+                                        type="text"
+                                        name="organizationName"
+                                        value={extraFields.organizationName}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label>Specialitet:</label>
+                                    <input
+                                        type="text"
+                                        name="speciality"
+                                        value={extraFields.speciality}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                            </>
+                        )}
+                        {role === 'Worker' && (
+                            <>
+                                <div>
+                                    <label>Adress:</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={extraFields.address}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label>Organisationsnamn:</label>
+                                    <input
+                                        type="text"
+                                        name="organizationName"
+                                        value={extraFields.organizationName}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label>Roll:</label>
+                                    <input
+                                        type="text"
+                                        name="roleTitle"
+                                        value={extraFields.roleTitle}
+                                        onChange={handleExtraFieldChange}
+                                        required
+                                    />
+                                </div>
+                            </>
+                        )}
+                        <div>
+                            <label>Kön:</label>
+                            <select className="full-width" value={gender} onChange={(e) => setGender(e.target.value)}
+                                    required>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                                <option value="OTHER">Others</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Namn:</label>
                             <input
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
                             />
-                        </div>
-                        <div>
-                            <label>Gender:</label>
-                            <select value={gender} onChange={(e) => setGender(e.target.value)} required>
-                                <option value="MALE">Male</option>
-                                <option value="FEMALE">Female</option>
-                                <option value="OTHER">Other</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Role:</label>
-                            <select value={role} onChange={(e) => setRole(e.target.value)} required>
-                                <option value="Patient">Patient</option>
-                                <option value="Doctor">Doctor</option>
-                                <option value="Worker">Worker</option>
-                            </select>
                         </div>
                     </>
                 )}
@@ -266,7 +266,7 @@ function Login({ onLogin }) {
                     />
                 </div>
                 <div>
-                    <label>Password:</label>
+                    <label>Lösenord:</label>
                     <input
                         type="password"
                         value={password}
@@ -274,10 +274,10 @@ function Login({ onLogin }) {
                         required
                     />
                 </div>
-                <button type="submit">{showRegister ? 'Register' : 'Login'}</button>
+                <button type="submit">{showRegister ? 'Registrera' : 'Logga in'}</button>
             </form>
             <button onClick={() => setShowRegister(!showRegister)}>
-                {showRegister ? 'Back to Login' : 'Create an Account'}
+                {showRegister ? 'Tillbaka till inloggning' : 'Skapa ett konto'}
             </button>
         </div>
     );
