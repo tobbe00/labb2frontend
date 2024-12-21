@@ -75,8 +75,12 @@ function Login({ onLogin }) {
 
         if (loginResult.success) {
             setErrorMessage('');
-            onLogin(loginResult.authUser);
-            navigate('/dashboard');
+            if (onLogin && loginResult.authUser) {
+                onLogin(loginResult.authUser); // Notify parent component
+            } else {
+                console.error("onLogin function not provided or authUser is missing.");
+            }
+            navigate('/dashboard'); // Redirect to dashboard or home page
         } else {
             setErrorMessage(loginResult.error);
         }
