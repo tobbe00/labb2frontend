@@ -24,6 +24,7 @@ async function registerUser({ name, email, password, gender, role, age, address,
 
 // Login user
 async function loginUser({ email, password }) {
+
     const body = new URLSearchParams({
         grant_type: "password",
         client_id: clientId,
@@ -81,7 +82,8 @@ function Login({ onLogin }) {
 
         if (loginResult.success) {
             setErrorMessage('');
-            //onLogin(loginResult.authUser); // Notify parent component about successful login
+            console.log(loginResult.authUser);
+            onLogin(loginResult.authUser); // Notify parent component about successful login
             navigate('/dashboard'); // Redirect to the dashboard or home page
         } else {
             setErrorMessage(loginResult.error);
