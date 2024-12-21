@@ -53,7 +53,7 @@ async function loginUser({ email, password }) {
             sessionStorage.setItem("user", JSON.stringify(decodedToken));
 
             // Fetch full user details from the backend
-            const userResponse = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/patientByEmail=${email}`, {
+            const userResponse = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/patientByEmail?email=${email}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${access_token}`,
