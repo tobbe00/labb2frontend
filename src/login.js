@@ -105,6 +105,7 @@ function Login({ onLogin }) {
             if (onLogin && authUser) {
                 onLogin(authUser); // Notify parent component with full user details
             } else {
+                console.log("the on ligin:"+onLogin+"the auth user"+authUser);
                 console.error("onLogin function not provided or authUser is missing.");
             }
 
