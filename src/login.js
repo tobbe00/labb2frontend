@@ -45,17 +45,42 @@ async function loginUser({ email, password }) {
             sessionStorage.setItem("access_token", access_token);
             sessionStorage.setItem("refresh_token", refresh_token);
 
-            const userInfo = JSON.parse(atob(access_token.split(".")[1]));
-            sessionStorage.setItem("user", JSON.stringify(userInfo));
+            // Decode the JWT token to extract user info
+            const decodedToken = JSON.parse(atob(access_token.split(".")[1]));
+            const { email, role } = decodedToken; // Extract email and role from token
 
-            return { success: true, authUser: userInfo };
+            // Save basic user info in session storage
+            sessionStorage.setItem("user", JSON.stringify(decodedToken));
+
+            // Fetch full user details from the backend
+            const userResponse = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/patientByEmail=${email}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${access_token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!userResponse.ok) {
+                throw new Error("Failed to fetch user details");
+            }
+
+            const userData = await userResponse.json();
+
+            // Save full user details in session storage
+            sessionStorage.setItem("userId", userData.userId); // Save only userId as a string
+            sessionStorage.setItem("user_details", JSON.stringify(userData));
+
+            return { success: true, authUser: userData }; // Return the full user data
         } else {
             return { success: false, error: data.error_description || "Login failed" };
         }
-    } catch {
+    } catch (error) {
+        console.error("Error during login:", error);
         return { success: false, error: "Network error" };
     }
 }
+
 
 function Login({ onLogin }) {
     const [email, setEmail] = useState('');
@@ -75,11 +100,14 @@ function Login({ onLogin }) {
 
         if (loginResult.success) {
             setErrorMessage('');
-            if (onLogin && loginResult.authUser) {
-                onLogin(loginResult.authUser); // Notify parent component
+            const { authUser } = loginResult;
+
+            if (onLogin && authUser) {
+                onLogin(authUser); // Notify parent component with full user details
             } else {
                 console.error("onLogin function not provided or authUser is missing.");
             }
+
             navigate('/dashboard'); // Redirect to dashboard or home page
         } else {
             setErrorMessage(loginResult.error);
