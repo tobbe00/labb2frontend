@@ -101,7 +101,7 @@ function Login({ onLogin }) {
         if (loginResult.success) {
             setErrorMessage('');
             onLogin(loginResult.authUser); // Notify parent component with full user details
-            navigate('/dashboard'); // Redirect to dashboard or home page
+            navigate('/'); // Redirect to dashboard or home page
         } else {
             setErrorMessage(loginResult.error);
         }

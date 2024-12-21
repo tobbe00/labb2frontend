@@ -28,6 +28,22 @@ function App() {
     const [searchResults, setSearchResults] = useState([]);
     const navigate = useNavigate();
 
+    const handleLogin = (loggedInUser) => {
+        // Update user state and session storage upon successful login
+        setUser({ ...loggedInUser, isLoggedIn: true });
+        sessionStorage.setItem("user", JSON.stringify({ ...loggedInUser, isLoggedIn: true }));
+        navigate("/"); // Redirect to home after login
+    };
+
+    const handleLogout = () => {
+        // Clear user state and session storage upon logout
+        setUser({ isLoggedIn: false, role: '' });
+        sessionStorage.removeItem("user");
+        sessionStorage.removeItem("userId");
+        sessionStorage.removeItem("role");
+        navigate("/login"); // Redirect to login after logout
+    };
+
     const handleSearchPatients = async (e) => {
         e.preventDefault();
         const params = new URLSearchParams();
@@ -90,7 +106,7 @@ function App() {
             </nav>
 
             <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login onLogin={handleLogin} />} />
                 <Route path="/messages" element={<Messages />} />
                 <Route path="/view-patients" element={<ViewPatients />} />
                 <Route path="/patients/:patientId/journal" element={<PatientJournal />} />
