@@ -5,26 +5,24 @@ import './login.css';
 const clientKeycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms/fullstack_labb3/protocol/openid-connect/token";
 const clientId = "frontend-app"; // Your frontend client ID
 
-
-
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
-    return fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
-    }).then(response => {
-        if (response.ok) return { success: true };
-        throw response;
-    }).catch(_ => {
+    try {
+        const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
+        });
+        if (response.ok) {
+            return { success: true };
+        }
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || 'Misslyckades att registrera användare' };
+    } catch {
         return { success: false, error: 'Misslyckades att registrera användare' };
-    });
+    }
 }
 
-// Login user
 async function loginUser({ email, password }) {
-
     const body = new URLSearchParams({
         grant_type: "password",
         client_id: clientId,
@@ -44,22 +42,17 @@ async function loginUser({ email, password }) {
 
         if (response.ok) {
             const { access_token, refresh_token } = data;
-
-            // Save tokens to session storage
             sessionStorage.setItem("access_token", access_token);
             sessionStorage.setItem("refresh_token", refresh_token);
 
-            // Decode user info from the JWT token
             const userInfo = JSON.parse(atob(access_token.split(".")[1]));
             sessionStorage.setItem("user", JSON.stringify(userInfo));
 
             return { success: true, authUser: userInfo };
         } else {
-            console.error("Login failed:", data);
             return { success: false, error: data.error_description || "Login failed" };
         }
-    } catch (error) {
-        console.error("Network error during login:", error);
+    } catch {
         return { success: false, error: "Network error" };
     }
 }
@@ -82,9 +75,8 @@ function Login({ onLogin }) {
 
         if (loginResult.success) {
             setErrorMessage('');
-            console.log(loginResult.authUser);
-            onLogin(loginResult.authUser); // Notify parent component about successful login
-            navigate('/dashboard'); // Redirect to the dashboard or home page
+            onLogin(loginResult.authUser);
+            navigate('/dashboard');
         } else {
             setErrorMessage(loginResult.error);
         }
@@ -93,21 +85,11 @@ function Login({ onLogin }) {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        // Filtrera ut tomma fält från extraFields
         const filteredExtraFields = Object.fromEntries(
             Object.entries(extraFields).filter(([_, value]) => value !== "")
         );
 
-        const data = {
-            name,
-            gender,
-            email,
-            password,
-            role,
-            ...filteredExtraFields // Använd de filtrerade extra fälten
-        };
-
-        console.log("Registreringsdata:", data); // Kontrollera vad som skickas efter filtrering
+        const data = { name, gender, email, password, role, ...filteredExtraFields };
 
         const result = await registerUser(data);
         if (result.success) {
@@ -150,7 +132,6 @@ function Login({ onLogin }) {
                             </select>
                         </div>
 
-                        {/* Dynamiska fält beroende på vald roll */}
                         {role === 'Patient' && (
                             <div>
                                 <label>Ålder:</label>
@@ -233,42 +214,25 @@ function Login({ onLogin }) {
                         )}
                         <div>
                             <label>Kön:</label>
-                            <select className="full-width" value={gender} onChange={(e) => setGender(e.target.value)}
-                                    required>
+                            <select value={gender} onChange={(e) => setGender(e.target.value)} required>
                                 <option value="MALE">Male</option>
                                 <option value="FEMALE">Female</option>
                                 <option value="OTHER">Others</option>
                             </select>
                         </div>
-
                         <div>
                             <label>Namn:</label>
-                            <input
-                                type="text"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                required
-                            />
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                         </div>
                     </>
                 )}
                 <div>
                     <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div>
                     <label>Lösenord:</label>
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
                 <button type="submit">{showRegister ? 'Registrera' : 'Logga in'}</button>
             </form>
