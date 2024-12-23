@@ -51,7 +51,7 @@ async function loginUser({ email, password }) {
 
             // Save basic user info in session storage
             sessionStorage.setItem("user", JSON.stringify(decodedToken));
-
+            console.log("yoyooy rn the acesstoken is "+ access_token)
             // Fetch full user details from the backend
             const userResponse = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/patientByEmail?email=${email}`, {
                 method: 'GET',
