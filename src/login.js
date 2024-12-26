@@ -66,10 +66,13 @@ async function loginUser({ email, password }) {
             }
 
             const userData = await userResponse.json();
-
+            // Add the role to the userData object
+            userData.role = role;
             // Save full user details in session storage
             sessionStorage.setItem("userId", userData.userId); // Save only userId as a string
             sessionStorage.setItem("user_details", JSON.stringify(userData));
+
+            sessionStorage.setItem("role",role);
 
             return { success: true, authUser: userData }; // Return the full user data
         } else {
