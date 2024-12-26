@@ -47,7 +47,12 @@ async function loginUser({ email, password }) {
 
             // Decode the JWT token to extract user info
             const decodedToken = JSON.parse(atob(access_token.split(".")[1]));
-            const { email, role } = decodedToken; // Extract email and role from token
+            const { email } = decodedToken;
+            const roles = decodedToken.realm_access?.roles || [];
+            const role = roles.find(r => r === "patient" || r === "doctor" || r === "worker") || "unknown"; // Default to 'unknown' if no relevant role is found
+
+            console.log("Extracted Role:", role);
+
 
             // Save basic user info in session storage
             sessionStorage.setItem("user", JSON.stringify(decodedToken));
