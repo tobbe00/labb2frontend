@@ -19,7 +19,7 @@ function handleLogout() {
 
 function App() {
     const [user, setUser] = useState(() => {
-        const storedUser = sessionStorage.getItem("user");
+        const storedUser = sessionStorage.getItem("user_details");
         return storedUser ? JSON.parse(storedUser) : { isLoggedIn: false, role: '' };
     });
 
