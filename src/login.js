@@ -160,7 +160,7 @@ function Login({ onLogin }) {
                             </select>
                         </div>
 
-                        {role === 'Patient' && (
+                        {role === 'patient' && (
                             <div>
                                 <label>Ålder:</label>
                                 <input
@@ -172,7 +172,7 @@ function Login({ onLogin }) {
                                 />
                             </div>
                         )}
-                        {role === 'Doctor' && (
+                        {role === 'doctor' && (
                             <>
                                 <div>
                                     <label>Adress:</label>
@@ -206,7 +206,7 @@ function Login({ onLogin }) {
                                 </div>
                             </>
                         )}
-                        {role === 'Worker' && (
+                        {role === 'worker' && (
                             <>
                                 <div>
                                     <label>Adress:</label>
