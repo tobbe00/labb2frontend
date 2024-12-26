@@ -20,6 +20,7 @@ function handleLogout() {
 function App() {
     const [user, setUser] = useState(() => {
         const storedUser = sessionStorage.getItem("user_details");
+        console.log("eyo just nu är vi inne i app där vi sätter user och user_details är"+sessionStorage.getItem("user_details")+"h'r 'r user"+ sessionStorage.getItem("user"));
         return storedUser ? JSON.parse(storedUser) : { isLoggedIn: false, role: '' };
     });
 
