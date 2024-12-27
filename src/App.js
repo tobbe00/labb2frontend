@@ -94,7 +94,7 @@ function App() {
                             <Link to="/view-employees">View Employees</Link>
                         )}
                         {user.isLoggedIn && user.role === "patient" && (
-                            <Link to={`/patients/${user.patientId}/journal`}>My Journal</Link>
+                            <Link to={`/patients/${/*user.patientId*/sessionStorage.getItem("userId")}/journal`}>My Journal</Link>
                         )}
                         {user.role !== "patient" && (
                             <Link to="/pictures">Pictures</Link>
