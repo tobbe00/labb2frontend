@@ -11,9 +11,21 @@ function PatientJournal() {
 
     useEffect(() => {
         const fetchPatientJournal = async () => {
+            const token = sessionStorage.getItem('accessToken'); // Retrieve token from session storage
+            if (!token) {
+                setError('Unauthorized access. Please log in.');
+                return;
+            }
             try {
                 // Hämta journalen för den valda patienten
-                const response = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/${patientId}/journal`);
+                const response = await fetch(`https://labb2journal.app.cloud.cbh.kth.se/api/patients/${patientId}/journal`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Include token in header
+                            'Content-Type': 'application/json',
+                        },
+                    });
                 if (!response.ok) {
                     throw new Error('Failed to fetch journal');
                 }
