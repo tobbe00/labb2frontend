@@ -165,7 +165,8 @@ function Login({ onLogin }) {
                             </select>
                         </div>
 
-                        {role === 'patient' && (
+                        {/* Dynamiska fält beroende på vald roll */}
+                        {role === 'Patient' && (
                             <div>
                                 <label>Ålder:</label>
                                 <input
@@ -177,7 +178,7 @@ function Login({ onLogin }) {
                                 />
                             </div>
                         )}
-                        {role === 'doctor' && (
+                        {role === 'Doctor' && (
                             <>
                                 <div>
                                     <label>Adress:</label>
@@ -211,7 +212,7 @@ function Login({ onLogin }) {
                                 </div>
                             </>
                         )}
-                        {role === 'worker' && (
+                        {role === 'Worker' && (
                             <>
                                 <div>
                                     <label>Adress:</label>
@@ -247,25 +248,42 @@ function Login({ onLogin }) {
                         )}
                         <div>
                             <label>Kön:</label>
-                            <select value={gender} onChange={(e) => setGender(e.target.value)} required>
+                            <select className="full-width" value={gender} onChange={(e) => setGender(e.target.value)}
+                                    required>
                                 <option value="MALE">Male</option>
                                 <option value="FEMALE">Female</option>
                                 <option value="OTHER">Others</option>
                             </select>
                         </div>
+
                         <div>
                             <label>Namn:</label>
-                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                            />
                         </div>
                     </>
                 )}
                 <div>
                     <label>Email:</label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
                 </div>
                 <div>
                     <label>Lösenord:</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
                 </div>
                 <button type="submit">{showRegister ? 'Registrera' : 'Logga in'}</button>
             </form>
