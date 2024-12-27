@@ -93,10 +93,10 @@ function App() {
                         ) : (
                             <Link to="/view-employees">View Employees</Link>
                         )}
-                        {user.isLoggedIn && user.role === "Patient" && (
+                        {user.isLoggedIn && user.role === "patient" && (
                             <Link to={`/patients/${user.patientId}/journal`}>My Journal</Link>
                         )}
-                        {user.role !== "Patient" && (
+                        {user.role !== "patient" && (
                             <Link to="/pictures">Pictures</Link>
                         )}
                         <button onClick={handleLogout} className="logout-button">Logout</button>
