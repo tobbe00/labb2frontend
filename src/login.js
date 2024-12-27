@@ -7,6 +7,7 @@ const clientId = "frontend-app"; // Your frontend client ID
 
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
     try {
+        console.log("hmm här e grejjerna som skickas t register"+name, email, password, gender, role, age, address, organizationName, speciality, roleTitle);
         const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
