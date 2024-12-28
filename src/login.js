@@ -27,11 +27,14 @@ async function registerUser({ name, email, password, gender, role, age, address,
             const errorData = await response2.json();
             return { success: false, error: errorData.error_description || 'Failed to login to Keycloak' };
         }
-
+        const accessToken =sessionStorage.getItem("access_token");
         // Step 2: If Keycloak login succeeds, proceed with backend registration
         const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`, // Send the token in the Authorization header
+            },
             body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }),
         });
 
