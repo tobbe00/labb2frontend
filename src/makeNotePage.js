@@ -47,19 +47,26 @@ function MakeNotePage() {
             doctorId: userId,
         };
 
-        // Make the POST request to save the note
+// Make the POST request to save the note
         try {
+            const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+            if (!token) {
+                setStatus('Unauthorized access. Please log in.');
+                return;
+            }
+
             const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/patients/makeNote', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
                 },
-                body: JSON.stringify(requestBody),
+                body: JSON.stringify(requestBody), // Send the request body
             });
 
             if (response.ok) {
                 setStatus('Note saved successfully!');
-                setDescription('');   // Clear the note input field
+                setDescription(''); // Clear the note input field
             } else {
                 setStatus('Failed to save note. Please try again.');
             }

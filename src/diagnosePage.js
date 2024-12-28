@@ -51,17 +51,24 @@ function DiagnosePage() {
 
         // Make the POST request to save the condition
         try {
+            const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+            if (!token) {
+                setStatus('Unauthorized access. Please log in.');
+                return;
+            }
+
             const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/patients/makeDiagnosis', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
                 },
-                body: JSON.stringify(requestBody),
+                body: JSON.stringify(requestBody), // Send the request body
             });
 
             if (response.ok) {
                 setStatus('Condition saved successfully!');
-                setConditionName('');  // Clear the input fields after submission
+                setConditionName(''); // Clear the input fields after submission
                 setConditionDescription('');
             } else {
                 setStatus('Failed to save condition. Please try again.');

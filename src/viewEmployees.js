@@ -11,15 +11,26 @@ function ViewEmployeesPage() {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/employees/getAllEmployees');
+                const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+                if (!token) {
+                    throw new Error('Unauthorized access. Please log in.');
+                }
+
+                const response = await fetch('https://labb2journal.app.cloud.cbh.kth.se/api/employees/getAllEmployees', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                    },
+                });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch employees');
                 }
 
                 const data = await response.json();
-                setEmployees(data);
-            } catch (error) {
+                setEmployees(data); // Set the employees data to state
+            }catch (error) {
                 setError('Failed to load employees.');
             } finally {
                 setLoading(false);

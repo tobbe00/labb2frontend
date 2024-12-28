@@ -10,14 +10,26 @@ function ViewPatients() {
     useEffect(() => {
         const fetchPatients = async () => {
             try {
-                const response = await fetch("https://labb2journal.app.cloud.cbh.kth.se/api/patients");
+                const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+                if (!token) {
+                    throw new Error('Unauthorized access. Please log in.');
+                }
+
+                const response = await fetch("https://labb2journal.app.cloud.cbh.kth.se/api/patients", {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                    },
+                });
+
                 if (!response.ok) {
                     throw new Error(`Error fetching patients: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                setPatients(data);
-            } catch (error) {
+                setPatients(data); // Update state with the patient data
+            }catch (error) {
                 setError(error.message || 'Failed to fetch patients.');
             } finally {
                 setLoading(false);
