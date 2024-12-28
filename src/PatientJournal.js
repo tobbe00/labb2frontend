@@ -11,7 +11,7 @@ function PatientJournal() {
 
     useEffect(() => {
         const fetchPatientJournal = async () => {
-            const token = sessionStorage.getItem('access_´token'); // Retrieve token from session storage
+            const token = sessionStorage.getItem('access_token'); // Retrieve token from session storage
             if (!token) {
                 setError('Unauthorized access. Please log in.');
                 return;
