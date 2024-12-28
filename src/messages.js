@@ -24,14 +24,25 @@ function Conversations() {
             if (!userId) return; // Prevent the fetch if userId is null
 
             try {
-                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/conversations/yourConversations/${userId}`);
+                const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+                if (!token) {
+                    throw new Error('Unauthorized access. Please log in.');
+                }
+
+                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/conversations/yourConversations/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                    },
+                });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch conversations');
                 }
 
                 const data = await response.json();
-                setConversations(data);
+                setConversations(data); // Update state with the conversation data
             } catch (error) {
                 setError('Failed to load conversations.');
             } finally {

@@ -12,11 +12,25 @@ function ChatRoom({ userId }) {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/messages/getConvoMessages/${conversationId}`);
-                if (!response.ok) throw new Error('Failed to fetch messages');
+                const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+                if (!token) {
+                    throw new Error('Unauthorized access. Please log in.');
+                }
+
+                const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/messages/getConvoMessages/${conversationId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch messages');
+                }
 
                 const data = await response.json();
-                setMessages(data);  // Set messages to state
+                setMessages(data); // Set messages to state
             } catch (error) {
                 setError('Failed to load messages.');
             }
@@ -30,16 +44,27 @@ function ChatRoom({ userId }) {
         if (!newMessage.trim()) return;  // Prevent sending empty messages
 
         try {
+            const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+            if (!token) {
+                throw new Error('Unauthorized access. Please log in.');
+            }
+
             const response = await fetch(`https://labb2messages.app.cloud.cbh.kth.se/api/messages/sendMessageInConvo`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                },
                 body: JSON.stringify({
                     text: newMessage,
                     conversationId,
-                    senderId: Number(sessionStorage.getItem("userId"))
+                    senderId: Number(sessionStorage.getItem("userId")),
                 }),
             });
-            if (!response.ok) throw new Error('Failed to send message');
+
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
 
             const savedMessage = await response.json();
             // Add the new message to the existing messages array

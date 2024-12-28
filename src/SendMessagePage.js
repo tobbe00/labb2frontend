@@ -54,22 +54,32 @@ function SendMessagePage() {
         };
 
         try {
+            const token = sessionStorage.getItem('access_token'); // Retrieve the token from session storage
+            if (!token) {
+                throw new Error('Unauthorized access. Please log in.');
+            }
+
             const response = await fetch('https://labb2messages.app.cloud.cbh.kth.se/api/messages/sendFirstMessage', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Add Authorization header with Bearer token
+                },
                 body: JSON.stringify(requestBody),
             });
 
             if (response.ok) {
                 setStatus('Message sent successfully!');
-                setMessage('');
-                setMessageTitle('');
+                setMessage('');         // Clear the message input field
+                setMessageTitle('');    // Clear the message title input field
             } else {
                 setStatus('Failed to send message. Please try again.');
             }
         } catch (error) {
-            setStatus('Error: Could not send message. Please check your connection.');
+            console.error('Error:', error.message || error);
+            setStatus(error.message || 'Failed to send message. Please try again.');
         }
+
     };
 
     return (
