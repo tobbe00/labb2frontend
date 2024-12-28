@@ -6,18 +6,33 @@ const clientKeycloakUrl = "https://keycloak-for-lab3.app.cloud.cbh.kth.se/realms
 const clientId = "frontend-app"; // Your frontend client ID
 
 async function registerUser({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }) {
+    const body2 = new URLSearchParams({
+        grant_type: "password",
+        client_id: clientId,
+        username: email,
+        password: password,
+        scope: "openid",
+    });
     try {
-        console.log("hmm här e grejjerna som skickas t register"+name, email, password, gender, role, age, address, organizationName, speciality, roleTitle);
-        const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
+        const response2 = await fetch(clientKeycloakUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body2.toString(),
         });
-        if (response.ok) {
-            return { success: true };
+        if (response2.ok){
+            const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
+            });
+            if (response.ok) {
+                return { success: true };
+            }
+            const errorData = await response.json();
+            return { success: false, error: errorData.message || 'Misslyckades att registrera användare' };
         }
-        const errorData = await response.json();
-        return { success: false, error: errorData.message || 'Misslyckades att registrera användare' };
+
+
     } catch {
         return { success: false, error: 'Misslyckades att registrera användare' };
     }
