@@ -77,6 +77,7 @@ async function loginUser({ email, password }) {
             // Save full user details in session storage
             sessionStorage.setItem("userId", userData.userId); // Save only userId as a string
             sessionStorage.setItem("user_details", JSON.stringify(userData));
+            sessionStorage.setItem("patentId",userData.patientId)
 
             sessionStorage.setItem("role",role);
 
