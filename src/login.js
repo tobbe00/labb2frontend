@@ -13,30 +13,43 @@ async function registerUser({ name, email, password, gender, role, age, address,
         password: password,
         scope: "openid",
     });
+
     try {
+        // Step 1: Attempt to login to Keycloak
         const response2 = await fetch(clientKeycloakUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body2.toString(),
         });
-        if (response2.ok){
-            const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle })
-            });
-            if (response.ok) {
-                return { success: true };
-            }
-            const errorData = await response.json();
-            return { success: false, error: errorData.message || 'Misslyckades att registrera användare' };
+
+        if (!response2.ok) {
+            // If Keycloak login fails, return an error
+            const errorData = await response2.json();
+            return { success: false, error: errorData.error_description || 'Failed to login to Keycloak' };
         }
 
+        // Step 2: If Keycloak login succeeds, proceed with backend registration
+        const response = await fetch('https://labb2login.app.cloud.cbh.kth.se/api/users/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password, gender, role, age, address, organizationName, speciality, roleTitle }),
+        });
 
-    } catch {
-        return { success: false, error: 'Misslyckades att registrera användare' };
+        if (response.ok) {
+            return { success: true };
+        }
+
+        // Handle backend registration error
+        const errorData = await response.json();
+        return { success: false, error: errorData.message || 'Failed to register user' };
+
+    } catch (error) {
+        // Handle network or unexpected errors
+        console.error("Error in registerUser:", error);
+        return { success: false, error: 'Network error or unexpected issue occurred' };
     }
 }
+
 
 async function loginUser({ email, password }) {
     const body = new URLSearchParams({
