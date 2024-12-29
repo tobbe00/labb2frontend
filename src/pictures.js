@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Pictures = () => {
     const [mode, setMode] = useState('upload'); // 'upload' or 'backend'
@@ -6,6 +7,7 @@ const Pictures = () => {
     const [imageList, setImageList] = useState([]); // List of images fetched from the backend
     const [selectedImage, setSelectedImage] = useState(null); // Currently selected image from the backend
     const [isImageSelected, setIsImageSelected] = useState(false); // To track if an image is selected
+    const navigate = useNavigate();  // Use React Router's useNavigate hook
 
     // Handle file input change (upload image)
 // Handle file input change (upload image)
@@ -83,8 +85,8 @@ const Pictures = () => {
     // Navigate to the edit page with a backend image
     const fetchAndNavigateToEditPage = () => {
         if (selectedImage) {
-            // Pass the image name in the URL to the edit page
-            window.location.href = `/edit?imageName=${encodeURIComponent(selectedImage)}`;
+            // Use navigate() to go to the edit page, keeping the session intact
+            navigate(`/edit?imageName=${encodeURIComponent(selectedImage)}`);
         } else {
             alert('Please select an image first.');
         }
