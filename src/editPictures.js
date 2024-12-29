@@ -22,7 +22,13 @@ const EditPictures = () => {
             setImageData(decodeURIComponent(encodedImageData));
             setLoading(false);
         } else if (imageName) {
-            fetch(`https://labb2pictures.app.cloud.cbh.kth.se/images/${imageName}`)
+            const accessToken = sessionStorage.getItem('access_token'); // Get access token from sessionStorage
+
+            fetch(`https://labb2pictures.app.cloud.cbh.kth.se/images/${imageName}`, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`, // Include the token in the Authorization header
+                },
+            })
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch the image from the server.');
@@ -39,6 +45,7 @@ const EditPictures = () => {
                     setError('Error loading image from the server.');
                     setLoading(false);
                 });
+
         } else {
             setError('No image data or name provided in the query.');
             setLoading(false);
@@ -117,8 +124,14 @@ const EditPictures = () => {
             const formData = new FormData();
             formData.append('image', blob, `${imageName || 'edited-image'}.png`);
 
+            const accessToken = sessionStorage.getItem('access_token'); // Get access token from sessionStorage
+
+            // Upload image to the server with Authorization header
             fetch('https://labb2pictures.app.cloud.cbh.kth.se/images', {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
                 body: formData,
             })
                 .then((response) => {
@@ -137,6 +150,7 @@ const EditPictures = () => {
                 });
         }, 'image/png');
     };
+
 
     return (
         <div style={{ padding: '20px', textAlign: 'center' }}>

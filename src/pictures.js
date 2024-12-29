@@ -8,15 +8,21 @@ const Pictures = () => {
     const [isImageSelected, setIsImageSelected] = useState(false); // To track if an image is selected
 
     // Handle file input change (upload image)
+// Handle file input change (upload image)
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             const formData = new FormData();
             formData.append('image', file);
 
-            // Upload image to the server
+            const accessToken = sessionStorage.getItem('access_token'); // Get access token from sessionStorage
+
+            // Upload image to the server with Authorization header
             fetch('https://labb2pictures.app.cloud.cbh.kth.se/images', {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
                 body: formData,
             })
                 .then((response) => response.json())
@@ -36,14 +42,26 @@ const Pictures = () => {
         }
     };
 
+
     // Fetch image list from the backend
+// Fetch image list from the backend
     const fetchImages = async () => {
         try {
-            const response = await fetch('https://labb2pictures.app.cloud.cbh.kth.se/images');
+            const accessToken = sessionStorage.getItem('access_token');
+
+            // Fetch images with Authorization header
+            const response = await fetch('https://labb2pictures.app.cloud.cbh.kth.se/images', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
             if (!response.ok) {
                 throw new Error('Failed to fetch images');
             }
+
             const data = await response.json();
+
             if (data.files) {
                 setImageList(data.files); // Set the fetched image list
             } else {
@@ -54,6 +72,7 @@ const Pictures = () => {
             alert('Error fetching images.');
         }
     };
+
 
     // Handle image selection from backend
     const selectImage = (image) => {
