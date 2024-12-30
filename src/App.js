@@ -47,39 +47,71 @@ function App() {
 
     const handleSearchPatients = async (e) => {
         e.preventDefault();
-        const params = new URLSearchParams();
 
+        // Retrieve the token from session storage
+        const token = sessionStorage.getItem("access_token");
+
+        // Create URLSearchParams for query parameters
+        const params = new URLSearchParams();
         if (searchPatientInput) {
-            params.append('query', searchPatientInput); // Send search text as 'query'
+            params.append("query", searchPatientInput); // Send search text as 'query'
         }
 
         try {
-            const response = await fetch(`https://labb2search.app.cloud.cbh.kth.se/search/patients?${params.toString()}`);
+            const response = await fetch(
+                `https://labb2search.app.cloud.cbh.kth.se/search/patients?${params.toString()}`,
+                {
+                    method: "GET", // HTTP method
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+                        "Content-Type": "application/json", // Optional, specify the content type
+                    },
+                }
+            );
+
             if (!response.ok) {
-                throw new Error('Failed to fetch patients');
+                throw new Error("Failed to fetch patients");
             }
+
             const data = await response.json();
-            console.log('Search Results:', data);
-            setSearchResults(data);
+            console.log("Search Results:", data);
+            setSearchResults(data); // Store the results as structured JSON
         } catch (error) {
-            console.error('Error searching patients:', error);
+            console.error("Error searching patients:", error);
         }
     };
+
 
     const handleSearchDoctors = async (e) => {
         e.preventDefault();
+
+        // Retrieve the token from session storage
+        const token = sessionStorage.getItem("access_token");
+
         try {
-            const response = await fetch(`https://labb2search.app.cloud.cbh.kth.se/search/doctor/patients?doctorName=${searchDoctorInput}`);
+            const response = await fetch(
+                `https://labb2search.app.cloud.cbh.kth.se/search/doctor/patients?doctorName=${encodeURIComponent(searchDoctorInput)}`,
+                {
+                    method: "GET", // HTTP method
+                    headers: {
+                        "Authorization": `Bearer ${token}`, // Add the token to the Authorization header
+                        "Content-Type": "application/json", // Optional, specify the content type
+                    },
+                }
+            );
+
             if (!response.ok) {
-                throw new Error('Failed to fetch doctor\'s patients');
+                throw new Error("Failed to fetch doctor's patients");
             }
+
             const data = await response.json();
-            console.log('Doctor Search Results:', data);
+            console.log("Doctor Search Results:", data);
             setSearchResults(data); // Store the results as structured JSON
         } catch (error) {
-            console.error('Error searching doctors:', error);
+            console.error("Error searching doctors:", error);
         }
     };
+
 
     return (
         <div className="App">
