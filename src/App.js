@@ -153,7 +153,7 @@ function App() {
                 <Route path="/" element={
                     <div>
                         <h1>Welcome {user.role} {user.name}</h1>
-                        {user.isLoggedIn && (user.role === "Doctor" || user.role === "Worker") && (
+                        {user.isLoggedIn && (user.role === "doctor" || user.role === "worker") && (
                             <div>
                                 {/* Patient search */}
                                 <h2>Search Patients</h2>
