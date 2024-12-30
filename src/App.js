@@ -20,7 +20,7 @@ function handleLogout() {
 function App() {
     const [user, setUser] = useState(() => {
         const storedUser = sessionStorage.getItem("user_details");
-        console.log("eyo just nu är vi inne i app där vi sätter user och user_details är"+sessionStorage.getItem("user_details")+"h'r 'r user"+ sessionStorage.getItem("user"));
+        console.log("eyo just nu är vi inne i app där vi sätter user och user_details är"+sessionStorage.getItem("user_details")+" user"+ sessionStorage.getItem("user"));
         return storedUser ? JSON.parse(storedUser) : { isLoggedIn: false, role: '' };
     });
 
@@ -153,8 +153,9 @@ function App() {
                 <Route path="/" element={
                     <div>
                         <h1>Welcome {user.role} {user.name}</h1>
-                        {user.isLoggedIn && (user.role === "doctor" || user.role === "worker") && (
+                        {user.isLoggedIn && (user.role === "Doctor" || user.role === "Worker") && (
                             <div>
+                                {/* Patient search */}
                                 <h2>Search Patients</h2>
                                 <form onSubmit={handleSearchPatients}>
                                     <input
@@ -165,6 +166,8 @@ function App() {
                                     />
                                     <button type="submit">Search</button>
                                 </form>
+
+                                {/* Doctor search */}
                                 <h2>Search Doctors</h2>
                                 <form onSubmit={handleSearchDoctors}>
                                     <input
@@ -175,10 +178,51 @@ function App() {
                                     />
                                     <button type="submit">Search</button>
                                 </form>
+
+                                <div>
+                                    <h3>Search Results</h3>
+                                    {/* Om searchResults är en array (Patient Search) */}
+                                    {Array.isArray(searchResults) ? (
+                                        <ul>
+                                            {searchResults.length > 0 ? (
+                                                searchResults.map((patient, index) => (
+                                                    <li key={index}>
+                                                        {patient.name} - {patient.gender || "N/A"} - {patient.age || "N/A"} years
+                                                        old
+                                                    </li>
+                                                ))
+                                            ) : (
+                                                <p>No results found</p>
+                                            )}
+                                        </ul>
+                                    ) : (
+                                        /* Om searchResults är ett objekt (Doctor Search) */
+                                        Object.keys(searchResults).length > 0 ? (
+                                            Object.entries(searchResults).map(([patientName, observations], index) => (
+                                                <div key={index}>
+                                                    <h4>{patientName}</h4>
+                                                    <ul>
+                                                        {Array.isArray(observations) && observations.length > 0 ? (
+                                                            observations.map((obs, idx) => (
+                                                                <li key={idx}>
+                                                                    Date: {obs.date} - Description: {obs.description}
+                                                                </li>
+                                                            ))
+                                                        ) : (
+                                                            <li>No observations available</li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p>No results found</p>
+                                        )
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>
-                } />
+                }/>
             </Routes>
         </div>
     );
